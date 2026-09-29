@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz — Licence 1 · histoire et géographie</title>
+<style>
+  :root{
+    --bg:#F3F0E9; --card:#FFFDF9; --ink:#16202E; --muted:#6B6A66; --line:#DCD5C7;
+    --blue:#23395B; --blue2:#4A6A94; --red:#A8322D; --gold:#9C7A3C;
+    --ok:#2E6B4F; --okbg:#E6F0E9; --nobg:#FAE7E5;
+    --shadow:0 1px 3px rgba(22,32,46,.08), 0 8px 24px rgba(22,32,46,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#141A22; --card:#1D2530; --ink:#E9E6DE; --muted:#9AA3AE; --line:#2C3644;
+      --blue:#8BA8CC; --blue2:#6E8CB4; --red:#E08B84; --gold:#C9A75F;
+      --ok:#7FC3A0; --okbg:#1C3029; --nobg:#33211F;
+      --shadow:0 1px 3px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141A22; --card:#1D2530; --ink:#E9E6DE; --muted:#9AA3AE; --line:#2C3644;
+    --blue:#8BA8CC; --blue2:#6E8CB4; --red:#E08B84; --gold:#C9A75F;
+    --ok:#7FC3A0; --okbg:#1C3029; --nobg:#33211F;
+    --shadow:0 1px 3px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;
+    padding:22px max(16px,env(safe-area-inset-left)) calc(60px + env(safe-area-inset-bottom))}
+  button,.opt,.chap,.tab,.mode,.survie{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+  h1{font-size:1.45rem;line-height:1.2;font-weight:700}
+  h1 small{display:block;font-size:.76rem;font-weight:400;color:var(--muted);margin-top:5px}
+  .iconbtn{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:8px;
+    padding:11px 14px;font-size:.8rem;cursor:pointer;font-family:inherit;min-height:44px;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .iconbtn:hover{border-color:var(--blue2)}
+  .stats{display:flex;gap:9px;margin-bottom:16px;flex-wrap:wrap}
+  .stat{flex:1;min-width:120px;background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:10px 12px;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:1.25rem;line-height:1.1;color:var(--blue)}
+  .stat span{font-size:.72rem;color:var(--muted)}
+  .modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .mode{flex:1;min-width:160px;background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);box-shadow:var(--shadow)}
+  .mode:hover:not(:disabled){border-color:var(--blue2)}
+  .mode b{display:block;font-size:.9rem;margin-bottom:3px}
+  .mode span{font-size:.75rem;color:var(--muted);line-height:1.35;display:block}
+  .mode:disabled{opacity:.45;cursor:not-allowed}
+  .seclabel{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--red);
+    font-weight:700;margin:22px 0 10px}
+  .chapters{display:grid;gap:9px}
+  .tabs{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+  .tab{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:10px 12px;text-align:left;cursor:pointer;color:var(--ink);font:inherit;box-shadow:var(--shadow)}
+  .tab b{display:block;font-size:.9rem}
+  .tab span{display:block;font-size:.72rem;color:var(--muted);margin-top:2px}
+  .tab.on{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue) inset}
+  .mode.mix{border-color:var(--gold)}
+  .chap{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;
+    background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 13px;
+    cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);box-shadow:var(--shadow)}
+  .chap:hover{border-color:var(--blue2)}
+  .chnum{width:34px;height:34px;border-radius:8px;background:var(--blue);color:#fff;display:flex;
+    align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+  .chttl{display:block;font-size:.88rem;font-weight:600;line-height:1.25}
+  .chsub{display:block;font-size:.73rem;color:var(--muted);margin-top:2px}
+  .score{font-size:.72rem;color:var(--muted);text-align:right;white-space:nowrap}
+  .score b{display:block;font-size:.92rem;color:var(--ok)}
+  .bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:14px}
+  .bar i{display:block;height:100%;background:var(--blue2);width:0;transition:width .25s ease}
+  .meta{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);margin-bottom:8px}
+  .qcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;
+    box-shadow:var(--shadow);margin-bottom:14px}
+  .qtag{font-size:.73rem;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-weight:700}
+  .qtext{font-size:1.05rem;font-weight:600;margin:9px 0 15px;line-height:1.4}
+  .opts{display:grid;gap:8px}
+  .opt{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;
+    background:transparent;border:1px solid var(--line);border-radius:9px;padding:11px 12px;
+    cursor:pointer;text-align:left;font-family:inherit;font-size:.9rem;color:var(--ink);line-height:1.4}
+  .opt:hover:not(:disabled){border-color:var(--blue2);background:rgba(74,106,148,.07)}
+  .opt kbd{width:26px;height:24px;border-radius:6px;border:1px solid var(--line);display:flex;
+    align-items:center;justify-content:center;font-size:.72rem;font-family:inherit;color:var(--muted)}
+  .opt.good{border-color:var(--ok);background:var(--okbg)}
+  .opt.bad{border-color:var(--red);background:var(--nobg)}
+  .opt:disabled{cursor:default}
+  .expl{margin-top:14px;border-left:3px solid var(--gold);padding:10px 13px;background:rgba(156,122,60,.09);
+    border-radius:0 8px 8px 0;font-size:.85rem;line-height:1.5}
+  .expl b{color:var(--red)}
+  .row{display:flex;gap:9px;flex-wrap:wrap}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:11px 18px;
+    font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit}
+  .btn:hover{opacity:.9}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .res{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:26px 18px;box-shadow:var(--shadow);margin-bottom:16px}
+  .big{font-size:2.6rem;font-weight:700;line-height:1;color:var(--blue)}
+  .res p{font-size:.88rem;color:var(--muted);margin-top:8px}
+  .verdict{font-size:1rem;font-weight:600;margin-top:12px}
+  .rev{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin-bottom:9px}
+  .rev .q{font-size:.88rem;font-weight:600;margin-bottom:7px}
+  .rev .a{font-size:.81rem;margin-bottom:3px}
+  .rev .gd{color:var(--ok);font-weight:600}
+  .rev .bd{color:var(--red)}
+  .rev .e{font-size:.79rem;color:var(--muted);margin-top:6px;line-height:1.45}
+  .empty{text-align:center;padding:30px 18px;color:var(--muted);font-size:.88rem}
+  footer{margin-top:26px;font-size:.72rem;color:var(--muted);text-align:center;line-height:1.7}
+
+  .sch{width:100%;max-width:460px;display:block;margin:12px auto 2px}
+  .sch text{font-family:inherit;font-size:13px;fill:var(--muted)}
+  .sch .t2{font-size:14px;fill:var(--ink);font-weight:600}
+  .sch .sm{font-size:11.4px}
+  @media (max-width:420px){ .qcard .sch, .rev .sch{margin-left:-10px;margin-right:-10px;width:calc(100% + 20px)} }
+  .survie{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:10px 13px;margin-bottom:14px;cursor:pointer;user-select:none}
+  .survie.on{border-color:var(--red);box-shadow:0 0 0 1px var(--red) inset}
+  .survie b{font-size:.88rem}.survie span{font-size:.74rem;color:var(--muted)}
+  .sw{position:relative;width:38px;height:22px;border-radius:11px;background:var(--line);flex:none;transition:background .18s}
+  .survie.on .sw{background:var(--red)}
+  .sw i{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .18s}
+  .survie.on .sw i{transform:translateX(16px)}
+  .streak{font-variant-numeric:tabular-nums;color:var(--red);font-weight:700}
+  .galgrid{display:grid;gap:14px}
+  .galcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px 6px}
+  .galcard h4{font-size:.86rem;font-weight:600;margin-bottom:2px}
+  .recgrid{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:18px}
+  .recrow{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:.82rem}
+  .recrow:last-child{border-bottom:none}
+  .recrow b{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .recbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 0;margin-bottom:18px}
+  .bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:6px}
+  .bar i{display:block;height:100%;background:var(--blue);border-radius:3px}
+
+  .qtop{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .qtop .iconbtn{padding:11px 14px;min-height:44px;font-size:.78rem}
+  .qtop .grow{flex:1}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;
+    justify-content:center;padding:20px;z-index:99}
+  .modal .box{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 20px 16px;max-width:380px;width:100%;box-shadow:0 16px 40px rgba(0,0,0,.28)}
+  .modal p{font-size:.92rem;margin-bottom:16px;line-height:1.45}
+  .modal .row{justify-content:flex-end}
+  .modal .btn{padding:10px 16px}
+  .btn.danger{background:var(--red)}
+
+  .expltxt{margin:0}
+  .schwrap{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .schlab{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+    font-weight:700;margin-bottom:2px}
+  .schwhy{font-size:.83rem;line-height:1.5;color:var(--ink);margin:8px 2px 0}
+  .schwhy b{color:var(--blue2)}
+  .hide{display:none !important}
+  @media (max-width:520px){h1{font-size:1.18rem}.qtext{font-size:.98rem}.wrap{padding:16px 12px 48px}.mode{min-width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Quiz — Licence 1
+      <small>Histoire contemporaine · Histoire romaine · Géographie, les mondes du froid</small></h1>
+    <button class="iconbtn" id="themeBtn">Thème</button>
+  </header>
+
+  <section id="home">
+    <div class="stats">
+      <div class="stat"><b id="sTotal">0</b><span>questions disponibles</span></div>
+      <div class="stat"><b id="sDone">0</b><span>chapitres travaillés</span></div>
+      <div class="stat"><b id="sAvg">—</b><span>moyenne générale</span></div>
+    </div>
+    <div class="modes">
+      <button class="mode" id="mExam"><b>Examen blanc</b><span>20 questions au hasard dans la matière choisie</span></button>
+      <button class="mode" id="mErrors"><b>Mes erreurs</b><span id="errCount">Aucune erreur enregistrée</span></button>
+      <button class="mode" id="mAll"><b>Tout réviser</b><span>Toute la matière choisie</span></button>
+      <button class="mode mix" id="mMix"><b>Quiz mix</b><span>20 questions tirées dans les trois matières, renouvelées à chaque essai</span></button>
+      <button class="mode" id="mGal"><b>Réviser les schémas</b><span>Les 36 schémas de cours, sans question</span></button>
+      <button class="mode" id="mRec"><b>Mes records</b><span>Scores, séries, progression</span></button>
+    </div>
+    <div class="survie" id="survieBox">
+      <span class="sw"><i></i></span>
+      <span><b>Mode survie</b><br><span>Une seule erreur et la partie s'arrête. Le compteur de série est conservé.</span></span>
+    </div>
+    <div class="seclabel">Matières</div>
+    <div class="tabs" id="subTabs"></div>
+    <div class="seclabel" id="subNote" style="color:var(--muted);letter-spacing:0;text-transform:none;font-size:.78rem"></div>
+    <div class="chapters" id="chapList"></div>
+    <div class="seclabel hide">Réviser par chapitre</div>
+    <footer>Scores enregistrés dans ce navigateur uniquement.<br>
+      <button class="iconbtn" id="resetBtn" style="margin-top:9px">Effacer mes scores</button></footer>
+  </section>
+
+  <section id="gallery" class="hide">
+    <div class="row" style="margin-bottom:16px"><button class="btn ghost" id="galBack">Retour</button></div>
+    <div id="galList"></div>
+  </section>
+
+  <section id="records" class="hide">
+    <div class="row" style="margin-bottom:16px"><button class="btn ghost" id="recBack">Retour</button></div>
+    <div id="recBody"></div>
+  </section>
+
+  <section id="quiz" class="hide">
+    <div class="qtop">
+      <button class="iconbtn" id="quitTop">&larr; Quitter</button>
+      <span class="grow"></span>
+    </div>
+    <div class="meta"><span id="qPos"></span><span id="qScore"></span></div>
+    <div class="meta hide" id="qStreakBar"><span>Mode survie</span><span class="streak" id="qStreak"></span></div>
+    <div class="bar"><i id="qBar"></i></div>
+    <div class="qcard">
+      <div class="qtag" id="qTag"></div>
+      <div class="qtext" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="expl hide" id="qExpl"></div>
+    </div>
+    <div class="row">
+      <button class="btn hide" id="nextBtn">Suivant</button>
+      <button class="btn ghost" id="quitBtn">Quitter</button>
+    </div>
+  </section>
+
+  <section id="result" class="hide">
+    <div class="res">
+      <div class="big" id="rScore"></div>
+      <p id="rSub"></p>
+      <div class="verdict" id="rVerdict"></div>
+    </div>
+    <div class="row" style="margin-bottom:18px">
+      <button class="btn" id="againBtn">Refaire</button>
+      <button class="btn ghost" id="wrongBtn">Revoir mes erreurs</button>
+      <button class="btn ghost" id="homeBtn">Accueil</button>
+    </div>
+    <div id="rReview"></div>
+  </section>
+</div>
+
+<div class="modal hide" id="modal">
+  <div class="box">
+    <p id="modalTxt"></p>
+    <div class="row">
+      <button class="btn ghost" id="modalNo">Annuler</button>
+      <button class="btn danger" id="modalYes">Confirmer</button>
+    </div>
+  </div>
+</div>
+<script>
+const CHAPTERS = [
+{n:1,t:"La France en Europe au lendemain des guerres impériales",s:"1814-1815 · Vienne, Cent-Jours",qs:[
+{q:"Le premier traité de Paris, du 30 mai 1814, ramène la France à ses frontières du :",o:["1<sup>er</sup> janvier 1792","1789","1790","1795"],c:0,e:"Frontières du 1<sup>er</sup> janvier 1792, sans indemnité ni occupation : un traitement volontairement doux, destiné à consolider les Bourbons."},
+{q:"L'acte final du Congrès de Vienne est signé le :",s:"h-vienne",w:"Sous la carte des remaniements, le schéma donne la date de l'acte final et précise qu'elle tombe neuf jours avant Waterloo. C'est ce décalage qui rend la date facile à retenir.",o:["30 mai 1814","9 juin 1815","20 novembre 1815","26 septembre 1815"],c:1,e:"Le 9 juin 1815, neuf jours avant Waterloo. Le 20 novembre 1815 est le second traité de Paris ; le 26 septembre, la Sainte-Alliance."},
+{q:"Après les Cent-Jours, le second traité de Paris impose une indemnité de :",o:["300 millions","500 millions","700 millions de francs","1 milliard"],c:2,e:"700 millions de francs, plus une occupation de 150 000 hommes aux frais de la France, évacuée en 1818."},
+{q:"Qui représente la France au Congrès de Vienne ?",s:"h-vienne",w:"La dernière ligne du schéma nomme le négociateur français et son argument, le principe de légitimité. La carte au-dessus montre ce qu'il réussit à limiter : le retour aux frontières de 1792.",o:["Fouché","Talleyrand","Chateaubriand","Richelieu"],c:1,e:"Talleyrand obtient d'être admis aux discussions des grandes puissances et exploite leur division sur la Saxe et la Pologne."},
+{q:"Le principe invoqué pour restaurer les dynasties s'appelle :",s:"h-vienne",w:"Le schéma indique que ce principe est appliqué de façon très sélective — ni Venise ni la Pologne n'en bénéficient. Cette restriction est le meilleur indice de son nom.",o:["le principe des nationalités","le principe de légitimité","le droit des peuples","la raison d'État"],c:1,e:"Le principe de légitimité — appliqué de façon très sélective : ni Venise ni la Pologne ne sont rétablies."},
+{q:"En 1802, Napoléon Bonaparte :",o:["abolit l'esclavage","rétablit l'esclavage","promulgue le Code civil","proclame l'Empire"],c:1,e:"La loi du 20 mai 1802 rétablit l'esclavage aboli en 1794. L'indépendance d'Haïti suit le 1<sup>er</sup> janvier 1804."},
+{q:"L'estimation aujourd'hui retenue des pertes militaires françaises de 1800 à 1815 est d'environ :",o:["300 000 morts","500 000 morts","900 000 à 1 million","2 millions"],c:2,e:"Estimation de J. Houdaille (<i>Population</i>, 1972) par sondage dans les registres matricules. Les chiffres vont de 916 000 à 1 200 000 selon les auteurs."},
+{q:"Hegel aurait vu « l'âme du monde à cheval » après la bataille de :",o:["Austerlitz","Iéna","Wagram","Leipzig"],c:1,e:"Iéna, octobre 1806. Sept ans plus tard, les mêmes États allemands mènent contre lui les « guerres de libération »."},
+{q:"La bataille de Leipzig (octobre 1813) est appelée :",o:["la bataille des Nations","la bataille des Trois Empereurs","la Moskowa","la bataille des Peuples"],c:0,e:"« Bataille des Nations » : elle devient un lieu de mémoire fondateur de l'unité allemande."},
+{q:"Napoléon abdique sans condition le :",o:["31 mars 1814","6 avril 1814","4 juin 1814","22 juin 1815"],c:1,e:"Le 6 avril 1814, après la capitulation de Paris le 31 mars et le vote de la déchéance par le Sénat le 2 avril."},
+{q:"La Charte est octroyée par Louis XVIII le :",o:["3 mai 1814","30 mai 1814","4 juin 1814","9 juin 1815"],c:2,e:"Le 4 juin 1814. Le mot « octroyée » est décisif : le roi concède, il ne reçoit pas."},
+{q:"Le retour de Napoléon débarquant en France, en 1815, a lieu le :",o:["1<sup>er</sup> mars","20 mars","18 juin","22 juin"],c:0,e:"Débarquement le 1<sup>er</sup> mars, entrée à Paris le 20 mars : c'est le « vol de l'Aigle ». Waterloo le 18 juin, seconde abdication le 22 juin."},
+{q:"Vers 1800, la France occupe en Europe le :",o:["1<sup>er</sup> rang démographique","2<sup>e</sup> rang, derrière la Russie","4<sup>e</sup> rang","5<sup>e</sup> rang"],c:1,e:"Environ 27 à 28 millions d'habitants : deuxième derrière la Russie, près d'un Européen sur six. En 1900, elle n'est plus que cinquième."}
+]},
+{n:2,t:"Restaurer la Monarchie ?",s:"1815-1830 · Charte, ultras, Trois Glorieuses",qs:[
+{q:"Sous la Restauration, il faut payer pour voter un impôt direct de :",s:"h-cens",w:"La pyramide du cens superpose trois niveaux : éligibles, électeurs, et le reste de la population. Le montant demandé sous la Restauration est celui du niveau intermédiaire, avant l'abaissement de 1831.",o:["100 F","200 F","300 F","1 000 F"],c:2,e:"300 F et 30 ans pour voter ; 1 000 F et 40 ans pour être élu. Soit environ 100 000 électeurs, 0,3 % de la population."},
+{q:"Les acquéreurs de biens nationaux, sous la Restauration :",o:["doivent les restituer","les conservent","sont expropriés en 1825","doivent les racheter"],c:1,e:"Ils les conservent : c'est la condition non négociable du retour des Bourbons. En 1825, on indemnise les émigrés en argent."},
+{q:"Quel article de la Charte Charles X invoque-t-il en juillet 1830 ?",o:["L'article 6","L'article 14","L'article 27","L'article 40"],c:1,e:"L'article 14, qui autorise les ordonnances « nécessaires à la sûreté de l'État ». C'est la bombe à retardement du texte."},
+{q:"En 1816, Louis XVIII dissout la « Chambre introuvable » parce qu'elle est :",o:["trop libérale","trop ultra-royaliste","bonapartiste","ingouvernable"],c:1,e:"Elle est plus royaliste que le roi : ses excès menacent la stabilité du régime."},
+{q:"L'assassinat du duc de Berry, en février 1820, entraîne :",o:["la chute de Villèle","la loi du double vote","la loi du sacrilège","le sacre de Charles X"],c:1,e:"Chute de Decazes, puis loi du double vote en juin 1820 : le quart le plus imposé des électeurs vote deux fois."},
+{q:"Le ministère Polignac est formé en :",o:["août 1829","janvier 1828","mars 1830","juillet 1830"],c:0,e:"Le 8 août 1829 ; Polignac devient officiellement président du Conseil en novembre. C'est le point de départ du document du fascicule."},
+{q:"L'article du <i>Journal des débats</i> du 10 août 1829 est :",o:["anti-monarchiste","anti-ultra mais monarchiste","bonapartiste","républicain"],c:1,e:"Il épargne le roi, « égaré » par de mauvais conseils, et défend la Charte. Il attaque les ministres pour sauver le monarque."},
+{q:"Qui est condamné pour cet article avant d'être absous en appel ?",o:["Chateaubriand","Bertin l'aîné","Guizot","Royer-Collard"],c:1,e:"Bertin l'aîné, directeur du journal : six mois de prison en correctionnelle, puis absolution par la cour royale."},
+{q:"La formule « Coblentz, Waterloo, 1815 » désigne :",o:["trois batailles","les trois ministres de 1829","trois traités","trois journaux"],c:1,e:"Polignac l'émigré, Bourmont qui déserta avant Ligny, La Bourdonnaye l'homme de la Terreur blanche. Trois noms, trois blessures françaises."},
+{q:"Les ordonnances de Saint-Cloud sont signées le :",o:["25 juillet 1830","27 juillet 1830","2 août 1830","14 août 1830"],c:0,e:"Le 25 juillet 1830 ; la première suspend la liberté de la presse. Les Trois Glorieuses suivent les 27, 28 et 29 juillet."},
+{q:"L'adresse des 221, en mars 1830, exprime :",o:["le soutien au roi","la défiance envers son gouvernement","une demande de guerre","une demande d'abdication"],c:1,e:"221 députés signifient au roi que son gouvernement n'a pas la confiance du pays. Charles X dissout deux fois de suite."},
+{q:"En juillet 1830, la France remporte une victoire militaire à :",o:["Navarin","Alger","Anvers","Constantine"],c:1,e:"Prise d'Alger le 5 juillet 1830. Aucune gloire extérieure ne compense une crise de légitimité intérieure."}
+]},
+{n:3,t:"La Monarchie de Juillet et le « Moment Guizot »",s:"1830-1848 · cens, capacités, caricature",qs:[
+{q:"Louis-Philippe porte le titre de :",s:"h-regimes",w:"Sur la frise des régimes, la bande 1830-1848 est nommée « monarchie de Juillet » et la note rappelle que Charles X part, Louis-Philippe arrive. Le changement de titre traduit ce changement de légitimité : le roi ne tient plus sa couronne de Dieu.",o:["roi de France","roi des Français","roi constitutionnel","prince-président"],c:1,e:"« Roi des Français » : il tient son pouvoir de la nation. La Charte de 1830 est <i>acceptée</i>, non plus <i>octroyée</i>."},
+{q:"La loi du 19 avril 1831 abaisse le cens électoral à :",s:"h-cens",w:"La note du schéma résume l'effet de cette loi : elle double le corps électoral sans le démocratiser. Le nouveau seuil est donc la moitié environ du précédent.",o:["100 F","200 F","250 F","300 F"],c:1,e:"200 F et 25 ans pour voter ; 500 F et 30 ans pour être élu. Le corps électoral passe d'environ 100 000 à 168 000 électeurs."},
+{q:"En 1847, le corps électoral compte environ :",s:"h-cens",w:"La pyramide montre à quel point la base sans droit de vote reste écrasante. L'effectif d'électeurs sous la monarchie de Juillet se compte en centaines de milliers, pour plus de trente millions d'habitants.",o:["100 000 électeurs","168 000","246 000","500 000"],c:2,e:"246 000 électeurs, environ 0,7 % de la population — sans nouvelle réforme : c'est l'enrichissement qui fait franchir le seuil du cens."},
+{q:"Dans la Charte révisée de 1830, le catholicisme devient :",o:["religion de l'État","religion de la majorité des Français","une religion parmi d'autres","interdit dans l'espace public"],c:1,e:"Nuance décisive : l'État constate un fait majoritaire au lieu de reconnaître une religion officielle."},
+{q:"Le discours de Guizot sur la réforme électorale date du :",o:["15 février 1842","1<sup>er</sup> mars 1843","24 février 1848","28 juin 1833"],c:0,e:"Séance du 15 février 1842, en réponse à la proposition du député Ducos ; publié au <i>Moniteur universel</i> du 16 février."},
+{q:"Quelle fonction Guizot exerce-t-il en 1842 ?",o:["Président du Conseil","Ministre des Affaires étrangères","Ministre de l'Instruction publique","Ambassadeur à Londres"],c:1,e:"Ministre des Affaires étrangères depuis 1840 et chef de fait du gouvernement ; il ne sera président du Conseil qu'en 1847."},
+{q:"La loi Guizot de 1833 concerne :",o:["la presse","l'instruction primaire","les associations","le travail des enfants"],c:1,e:"Une école primaire par commune. Guizot ouvre les écoles et ferme les urnes."},
+{q:"Les « capacités » désignent :",o:["les plus gros contribuables","ceux que leur compétence rend aptes à voter","les électeurs à double vote","les membres du Conseil d'État"],c:1,e:"Magistrats, officiers, avocats, médecins, membres de l'Institut. Ducos propose en 1842 la liste départementale du jury comme critère."},
+{q:"Guizot refuse la réforme parce que, selon lui :",o:["le peuple est ignorant","il n'y a plus de classes opposées en France","la Charte l'interdit","le roi s'y oppose"],c:1,e:"Son argument : la société est homogène, l'électeur à 300 F représente déjà celui à 200 F. Or les canuts se sont soulevés en 1831 et 1834."},
+{q:"L'allusion de Guizot aux réformes « accomplies ailleurs » vise surtout :",o:["le Reform Act britannique de 1832","la Constitution belge de 1831","les révolutions italiennes","la Prusse de 1848"],c:0,e:"Le Reform Act de 1832 : il concède la légitimité du principe pour mieux en refuser l'application en France."},
+{q:"« Les journaux et les comités » désignent, dans son discours :",o:["l'opposition royaliste","la campagne extra-parlementaire pour la réforme","les sociétés secrètes","les banquiers"],c:1,e:"La presse d'opposition et les comités réformistes, dont naîtra la campagne des banquets de 1847-1848."},
+{q:"<i>Les Poires</i> paraissent dans <i>Le Charivari</i> le :",o:["17 janvier 1834","14 novembre 1831","22 février 1848","1<sup>er</sup> mars 1843"],c:0,e:"D'après le croquis dessiné par Philipon devant ses juges en 1831. La planche sert à payer l'amende du journal."}
+]},
+{n:4,t:"La Révolution de 1848",s:"Février, juin · une révolution politique et sociale",qs:[
+{q:"Le suffrage universel masculin est instauré par le décret du :",s:"h-1848",w:"Le schéma de 1848 découpe l'année en trois moments. Le premier bloc, « Février », porte le suffrage universel masculin et les ateliers nationaux : c'est là que se situe le décret.",o:["24 février 1848","5 mars 1848","27 avril 1848","4 novembre 1848"],c:1,e:"Décret du 5 mars 1848 : tout Français de 21 ans, six mois de résidence, scrutin secret."},
+{q:"Le corps électoral passe alors de 246 000 à environ :",s:"h-1848",w:"Le bloc « Février » du schéma marque la rupture avec le suffrage censitaire : on passe d'un corps électoral de quelques centaines de milliers d'hommes à plusieurs millions d'un seul coup.",o:["3 millions","6 millions","9,4 millions","12 millions"],c:2,e:"Multiplié par trente-huit en trois semaines. Le suffrage français devient le plus large d'Europe — les femmes restent exclues."},
+{q:"Pourquoi des banquets plutôt que des réunions politiques ?",o:["Par tradition","Parce que les réunions politiques sont soumises à autorisation","Pour lever des fonds","Pour éviter l'impôt"],c:1,e:"Un repas privé avec toasts échappe formellement à l'interdiction. Environ soixante-dix banquets de juillet 1847 à février 1848."},
+{q:"Lamartine refuse, devant l'Hôtel de Ville :",o:["la présidence","le drapeau rouge","le suffrage universel","l'abolition de l'esclavage"],c:1,e:"Refus du drapeau rouge au profit du tricolore : le choix d'une république politique contre une république sociale, dès le troisième jour."},
+{q:"L'esclavage est aboli dans les colonies le :",o:["24 février 1848","5 mars 1848","27 avril 1848","23 juin 1848"],c:2,e:"Décret du 27 avril 1848, dit décret Schœlcher. Seconde abolition, après celle de 1794 annulée en 1802."},
+{q:"Aux élections d'avril 1848, la participation atteint environ :",o:["45 %","62 %","84 %","95 %"],c:2,e:"84 % pour un premier scrutin au suffrage universel : un chiffre considérable malgré les distances à parcourir."},
+{q:"L'Assemblée élue en avril 1848 est dominée par :",o:["les socialistes","les républicains modérés et les notables","les bonapartistes","les légitimistes"],c:1,e:"Environ 500 républicains modérés, 250 monarchistes, 150 radicaux et socialistes. La France rurale vote pour l'ordre."},
+{q:"Dans ses <i>Souvenirs</i>, Tocqueville décrit un vote :",o:["chaotique","en procession villageoise, par ordre alphabétique","boycotté","truqué"],c:1,e:"Le scrutin est secret, pas le chemin qui y mène. Le suffrage s'exerce collectivement, derrière le notable local."},
+{q:"Les journées de juin 1848 sont déclenchées par :",s:"h-1848",w:"Le bloc central du schéma énonce la cause en tête : la fermeture des ateliers nationaux, suivie de l'insurrection et de sa répression. L'ordre des trois lignes est l'enchaînement causal.",o:["la fermeture des ateliers nationaux","l'élection de Louis-Napoléon","le refus du drapeau rouge","la dissolution de l'Assemblée"],c:0,e:"Décision du 21 juin : plus de cent mille hommes sans ressource du jour au lendemain. L'insurrection éclate les 23-26 juin."},
+{q:"Qui reçoit les pleins pouvoirs pour réprimer les journées de juin ?",o:["Lamartine","Ledru-Rollin","Cavaignac","Louis Blanc"],c:2,e:"Le général Cavaignac emploie l'artillerie contre des quartiers entiers. Les estimations récentes vont de 5 400 à 11 500 morts."},
+{q:"Le « droit au travail » est proclamé :",o:["le 25 février 1848","en juin 1848","en novembre 1848","en 1850"],c:0,e:"Le 25 février 1848 par le gouvernement provisoire : l'État se reconnaît une obligation sociale. C'est inédit."},
+{q:"Les journées de juin marquent :",s:"h-1848",w:"Le schéma oppose le bloc de février, politique et fraternel, au bloc de juin, social et sanglant. Le passage de l'un à l'autre est le basculement que la question vous demande de nommer.",o:["la victoire de la république sociale","l'écrasement de la révolution sociale par la révolution politique","la fin de la République","le retour de la monarchie"],c:1,e:"Les mêmes hommes qui ont proclamé le droit au travail en février le suppriment en juin. La II<sup>e</sup> République est blessée à mort à six mois."}
+]},
+{n:5,t:"La Deuxième République, une illusion perdue ?",s:"1848-1852 · du plébiscite au coup d'État",qs:[
+{q:"À la présidentielle du 10 décembre 1848, Louis-Napoléon obtient :",s:"h-1848",w:"Le troisième bloc du schéma donne l'ampleur du résultat, proche des trois quarts des voix, et la note ajoute le paradoxe : l'élu supprimera la République trois ans plus tard.",o:["51 % des voix","63 %","74,2 %","88 %"],c:2,e:"Environ 5,43 millions de voix, contre 1,45 million à Cavaignac et 370 000 à Ledru-Rollin."},
+{q:"À Lille, Louis-Napoléon obtient en décembre 1848 :",o:["25 % des voix","52 %","70 %","81 %"],c:0,e:"Avec Marseille, la seule grande ville qui lui résiste : une ville ouvrière déjà politisée."},
+{q:"La Constitution du 4 novembre 1848 prévoit un président :",o:["élu pour 4 ans, non rééligible immédiatement","élu pour 7 ans","nommé par l'Assemblée","élu pour 10 ans"],c:0,e:"Quatre ans, non rééligible, élu au suffrage universel direct — face à une Assemblée unique élue de la même façon. Deux légitimités, aucun arbitre."},
+{q:"La loi du 31 mai 1850 :",o:["abolit le suffrage universel","exige trois ans de domicile pour voter","rétablit le cens","interdit les grèves"],c:1,e:"Le principe reste « universel », mais la liste rétrécit : près d'un électeur sur trois est rayé, surtout parmi les ouvriers mobiles."},
+{q:"À Lille, cette loi fait passer le nombre d'électeurs de 15 058 à :",o:["11 200","8 700","4 524","1 900"],c:2,e:"70 % des électeurs lillois supprimés d'un trait. Les villes industrielles paient le prix fort."},
+{q:"Le coup d'État de Louis-Napoléon Bonaparte a lieu le :",s:"h-regimes",w:"La frise fait finir la Deuxième République en 1852 et commencer le Second Empire. Le coup d'État se place juste avant cette bascule, à la fin de l'année précédente.",o:["2 décembre 1851","2 décembre 1852","10 décembre 1848","14 janvier 1852"],c:0,e:"La date n'est pas choisie au hasard : sacre de Napoléon I<sup>er</sup> en 1804, Austerlitz en 1805. L'Empire sera proclamé le 2 décembre 1852."},
+{q:"Le jour du coup d'État, Louis-Napoléon :",o:["restreint le suffrage","rétablit le suffrage universel","supprime le Sénat","proclame l'Empire"],c:1,e:"Il viole la Constitution en se réclamant du peuple contre les élus du peuple : c'est la définition du césarisme démocratique."},
+{q:"« Les hommes qui ont perdu deux monarchies » désigne :",o:["les bonapartistes","les légitimistes et les orléanistes","les républicains","les socialistes"],c:1,e:"Ceux qui ont perdu 1830 et 1848, réunis dans le parti de l'Ordre, majoritaires à l'Assemblée depuis mai 1849."},
+{q:"Les « passions subversives » de la proclamation désignent :",o:["les monarchistes","les démocrates-socialistes","les catholiques","l'armée"],c:1,e:"Elles mobilisent la peur du « spectre rouge de 1852 » : le coup d'État est présenté comme une mesure de protection sociale."},
+{q:"Le système proposé le 2 décembre 1851 s'inspire explicitement :",o:["de la Charte de 1814","du Consulat de 1799","de la Constitution de 1848","du modèle anglais"],c:1,e:"Le texte le dit : « ce système, créé par le premier consul ». C'est la Constitution de l'an VIII."},
+{q:"Le plébiscite des 20-21 décembre 1851 recueille environ :",o:["4,2 millions de oui","7,4 millions de oui","9,8 millions","2,1 millions"],c:1,e:"Environ 7,4 millions de oui sur 8 millions de votants. La Constitution suivra le 14 janvier 1852."},
+{q:"La « candidature officielle » désigne :",o:["l'élection des préfets","le soutien ouvert de l'administration à un candidat","la nomination des députés","le vote obligatoire"],c:1,e:"Affiches blanches réservées, mobilisation des maires et des fonctionnaires, pressions et faveurs. L'affiche lilloise du 27 février 1852 en est un exemple."},
+{q:"À Lille, en 1852, le candidat officiel Richebé est :",o:["élu au premier tour","élu de justesse","battu par l'opposant Pierre Legrand","sans concurrent"],c:2,e:"Battu au second tour. Cette année-là, on ne compte que huit opposants élus dans toute la France — et Lille en fournit un."}
+]},
+{n:6,t:"Le Second Empire et le monde",s:"1852-1870 · Crimée, Italie, alliance anglaise",qs:[
+{q:"Les deux discours du fascicule (1854 et 1856) portent sur :",o:["la guerre d'Italie","la guerre de Crimée","l'expédition du Mexique","la guerre contre la Prusse"],c:1,e:"Guerre de Crimée, 1853-1856. Le premier discours annonce la guerre, le second dresse le bilan pendant le congrès de Paris."},
+{q:"En Crimée, la France est alliée :",s:"h-secondempire",w:"La première colonne du schéma donne la configuration complète de la guerre de Crimée : avec qui la France combat, et contre qui. Les deux lignes se lisent ensemble.",o:["à la Russie et à la Prusse","au Royaume-Uni et à l'Empire ottoman","à l'Autriche seule","à l'Espagne"],c:1,e:"France, Royaume-Uni et Empire ottoman, rejoints par le Piémont-Sardaigne, contre la Russie."},
+{q:"Le bilan humain français de la guerre de Crimée est d'environ :",o:["20 000 morts","45 000 morts","95 000 morts","150 000 morts"],c:2,e:"Environ 95 000 morts, dont les trois quarts emportés par le choléra, le typhus et le froid — non par les combats."},
+{q:"Qui prend la tour de Malakoff en septembre 1855 ?",o:["Bazaine","Mac-Mahon","Cavaignac","Canrobert"],c:1,e:"Mac-Mahon, futur président de la République : « J'y suis, j'y reste ». Sébastopol tombe après onze mois de siège."},
+{q:"Le congrès qui met fin à la guerre se tient à :",o:["Vienne","Berlin","Paris","Londres"],c:2,e:"Congrès de Paris, 25 février - 30 mars 1856 : Napoléon III préside la recomposition de l'Europe dans sa propre capitale."},
+{q:"« Le temps des conquêtes est passé sans retour » est démenti en 1860 par :",s:"h-secondempire",w:"La deuxième colonne du schéma date de 1859 la campagne d'Italie et donne son prix : Nice et la Savoie. C'est cette annexion qui dément la formule impériale.",o:["l'expédition du Mexique","l'annexion de Nice et de la Savoie","la prise de Saigon","la conquête de l'Algérie"],c:1,e:"Prix payé par le Piémont pour l'aide française lors de la guerre d'Italie de 1859. Le désintéressement proclamé a un prix territorial."},
+{q:"Pourquoi Napoléon III doit-il jurer qu'il ne veut pas conquérir ?",o:["Parce que l'armée est faible","Parce qu'il s'appelle Bonaparte","Parce que la Constitution l'interdit","Parce que le Parlement s'y oppose"],c:1,e:"L'Europe de 1854 se souvient de 1815 et redoute qu'un Napoléon au pouvoir signifie le retour des guerres de conquête."},
+{q:"Avec quelle puissance la France se rapproche-t-elle nettement dans les années 1850-1860 ?",o:["La Prusse","La Russie","Le Royaume-Uni","L'Autriche"],c:2,e:"Militairement (Crimée, Chine), symboliquement (visite de la reine Victoria en 1855) et économiquement (traité de libre-échange de 1860)."},
+{q:"Le traité de libre-échange de 1860 est négocié côté français par :",o:["Michel Chevalier","Eugène Schneider","Adolphe Thiers","Émile Ollivier"],c:0,e:"Michel Chevalier, saint-simonien, avec Richard Cobden. Le même homme dirigera le rapport du jury de l'Exposition de 1867."},
+{q:"L'expédition qui se termine par un désastre et l'exécution de Maximilien est celle :",s:"h-secondempire",w:"La dernière colonne du schéma porte la formule « la plus grande pensée du règne », avec ses dates 1862-1867. Le décalage entre l'ambition affichée et l'issue est précisément ce que la question vise.",o:["de Syrie","de Chine","du Mexique","d'Indochine"],c:2,e:"Mexique, 1861-1867 : « la plus grande pensée du règne » devenue son humiliation."},
+{q:"La loi Ollivier de 1864 reconnaît :",o:["la liberté de la presse","le droit de grève","le droit syndical","le suffrage universel"],c:1,e:"Elle supprime le délit de coalition. Le syndicat, lui, ne sera légalisé qu'en 1884."},
+{q:"L'Empire s'effondre après la défaite de :",s:"h-1870",w:"La frise de la guerre place la proclamation de la République au 4 septembre, immédiatement après une bataille du 1er-2 septembre. C'est cette défaite-là, où l'empereur est capturé, qui fait tomber le régime.",o:["Sedan, 2 septembre 1870","Solférino","Magenta","Lang Son"],c:0,e:"Sedan, le 2 septembre 1870 ; la République est proclamée à Paris le 4 septembre."}
+]},
+{n:7,t:"L'émergence de la société industrielle",s:"Le Creusot, l'Exposition de 1867",qs:[
+{q:"Le document du fascicule est extrait :",o:["d'un rapport du jury de l'Exposition universelle de 1867","d'un discours parlementaire","d'un article de presse","d'un manuel d'ingénieur"],c:0,e:"<i>Rapports du jury international</i>, tome V, classe 40, publiés en 1868 — une expertise officielle, écrite par des ingénieurs."},
+{q:"Qui dirige le rapport du jury de l'Exposition de 1867 ?",o:["Eugène Schneider","Michel Chevalier","Julien Turgan","Émile Zola"],c:1,e:"Michel Chevalier, saint-simonien et négociateur du traité de libre-échange de 1860 : son regard n'est pas neutre, il est progressiste au sens du siècle."},
+{q:"Le Creusot produit chaque année, selon le rapport de 1867, plus de :",s:"h-industrie",w:"La frise de la société industrielle associe Le Creusot aux expositions universelles de 1855-1867. Le rapport de 1867 chiffre une production de fer et d'acier qui se compte en dizaines de milliers de tonnes.",o:["10 000 tonnes de rails","50 000 tonnes","100 000 tonnes de rails","500 000 tonnes"],c:2,e:"Plus de 100 000 tonnes de rails, auxquelles s'ajoutent tôles, locomotives et machines de marine."},
+{q:"Les frères Schneider rachètent Le Creusot en :",o:["1815","1836","1848","1867"],c:1,e:"En 1836, avec le soutien de la banque Seillière. Eugène reste seul maître après la mort d'Adolphe en 1845."},
+{q:"La population du Creusot passe de 2 700 habitants en 1836 à environ :",s:"h-industrie",w:"Le schéma fait du Creusot l'exemple de la ville-usine. Entre 1836 et les années 1860, la population est multipliée par près de dix : c'est l'ordre de grandeur à retenir.",o:["8 000 en 1866","12 000","24 000 en 1866","40 000"],c:2,e:"Près de 24 000 habitants : ce n'est pas une ville où l'on a bâti une usine, c'est une usine qui a fabriqué une ville."},
+{q:"Parmi les minerais cités par le rapport de 1867, lequel vient d'une colonie ?",o:["L'île d'Elbe","Mazenay","Le Berry","Mokta-el-Hadid, en Algérie"],c:3,e:"La métallurgie française est alimentée par l'empire colonial dès les années 1860 — trente ans avant le débat Ferry-Clemenceau."},
+{q:"Le « procédé anglais » évoqué dans le rapport de 1867 consiste à utiliser :",o:["le charbon de bois","la houille transformée en coke","l'électricité","le gaz"],c:1,e:"Conséquence majeure : l'usine se déplace vers le bassin houiller et la production change d'échelle."},
+{q:"En 1867, Eugène Schneider est aussi :",o:["ministre des Finances","président du Corps législatif","préfet de Saône-et-Loire","sénateur inamovible"],c:1,e:"Président du Corps législatif, député depuis 1852, régent de la Banque de France et maire du Creusot. Il préside l'assemblée qui vote le budget dont son usine bénéficie."},
+{q:"Quel est le principal débouché de la métallurgie française sous le Second Empire ?",o:["Les chemins de fer","L'agriculture","Le textile","L'exportation vers l'Amérique"],c:0,e:"Rails et locomotives : le réseau passe d'environ 3 000 km en 1850 à près de 17 500 km en 1870."},
+{q:"Les « plaques de blindage » du Creusot sont destinées :",o:["au bâtiment","à l'armée et à la marine","aux tonneliers","aux chemins de fer"],c:1,e:"Une pièce est essayée à Vincennes. Le lien est direct entre les guerres de l'Empire et les carnets de commandes."},
+{q:"Le paternalisme industriel des Schneider signifie que l'entreprise possède :",o:["seulement l'usine","l'usine, le logement, l'école et l'hôpital","les mines uniquement","les chemins de fer"],c:1,e:"Protéger pour mieux tenir. Le système craque en janvier 1870 : la grève éclate au Creusot."},
+{q:"Ce que le rapport du jury de 1867 ne dit jamais, c'est :",o:["la provenance des minerais","les salaires, les horaires et les accidents","les procédés techniques","les clients de l'usine"],c:1,e:"Le silence d'une source officielle est une information : on célèbre la régularité et le contrôle qualité, jamais les conditions de travail."}
+]},
+{n:8,t:"La construction du régime républicain",s:"1870-1889 · les lois de 1875, le Seize-Mai",qs:[
+{q:"L'amendement Wallon est adopté le 30 janvier 1875 par :",o:["413 voix contre 248","353 voix contre 352","300 contre 275","majorité des deux tiers"],c:1,e:"Une voix d'écart en première lecture. L'ensemble du texte sera ensuite adopté par 413 contre 248 : c'est ce vote qui est juridiquement décisif."},
+{q:"Henri Wallon est député :",o:["de Paris","du Nord","du Rhône","de la Gironde"],c:1,e:"Élu du département du Nord sur une liste de centre droit ; professeur d'histoire à la Sorbonne, surnommé le « père de la Constitution »."},
+{q:"Combien de lois constitutionnelles sont votées en 1875 ?",s:"h-1875",w:"La note en bas du schéma des institutions énumère les textes avec leurs dates : 24 février, 25 février et 16 juillet 1875. Le compte se fait directement sur cette ligne.",o:["Une","Deux","Trois","Quatre"],c:2,e:"24 février (Sénat), 25 février (organisation des pouvoirs publics), 16 juillet (rapports entre les pouvoirs). Pas de Constitution solennelle : ce serait trancher la nature du régime."},
+{q:"Le mandat présidentiel est fixé à :",s:"h-1875",w:"La case « Président » du schéma donne la durée et le mode d'élection dans la même ligne. Retenez les deux ensemble : élu par les chambres, il leur doit son poste.",o:["4 ans","5 ans","7 ans","10 ans"],c:2,e:"Le septennat, voté en 1873 pour Mac-Mahon, est pérennisé et rendu impersonnel par l'amendement Wallon."},
+{q:"La dissolution de la Chambre exige :",s:"h-1875",w:"La flèche de dissolution du schéma part du président vers la Chambre, mais porte une condition : l'avis conforme de l'autre assemblée. C'est ce verrou qui rendra la dissolution inutilisable après 1877.",o:["l'avis conforme du Sénat","un référendum","l'accord du Conseil d'État","rien de particulier"],c:0,e:"Article 5 de la loi du 25 février 1875 : c'est la contrepartie donnée aux monarchistes."},
+{q:"Quel mécanisme neutralise les pouvoirs du président ?",o:["Le référendum","Le contreseing ministériel","Le veto du Sénat","L'élection directe"],c:1,e:"Chacun de ses actes doit être contresigné par un ministre, lui-même responsable devant les chambres. Irresponsable donc impuissant."},
+{q:"La crise du Seize-Mai a lieu en :",o:["1875","1877","1879","1884"],c:1,e:"16 mai 1877 : Mac-Mahon renvoie un gouvernement soutenu par la Chambre, dissout, et perd les élections d'octobre."},
+{q:"Quelle est la conséquence durable de la crise du Seize-Mai (1877) ?",o:["le Sénat est supprimé","le droit de dissolution devient inutilisable","le président est élu au suffrage universel","la Chambre perd son pouvoir budgétaire"],c:1,e:"Aucun président n'osera plus dissoudre sous la III<sup>e</sup> République. Le texte donne le droit, la pratique l'enterre."},
+{q:"Pourquoi l'Assemblée siège-t-elle à Versailles ?",s:"h-1870",w:"La frise montre Paris assiégé et affamé jusqu'à l'armistice de janvier, puis la Semaine sanglante en mai. Entre les deux, la capitale est insurgée : l'Assemblée ne peut pas y siéger.",o:["Par tradition","Par méfiance envers Paris","Faute de locaux","Par décision du Sénat"],c:1,e:"Paris a fait 1830, 1848, le 4 septembre 1870 et la Commune. Le retour à Paris n'aura lieu qu'en 1879."},
+{q:"Le Sénat de 1875 comprend 300 membres, dont :",s:"h-1875",w:"La case « Sénat » du schéma indique 300 membres élus au suffrage indirect. Une partie d'entre eux échappe pourtant à toute élection renouvelée : c'est cette anomalie que la question vise.",o:["50 élus à vie","75 inamovibles","100 nommés par le président","aucun membre nommé"],c:1,e:"75 sénateurs inamovibles, supprimés par la révision de 1884. Le collège électoral favorise les petites communes rurales."},
+{q:"La forme républicaine du gouvernement devient irrévisable en :",o:["1875","1884","1889","1905"],c:1,e:"La révision de 1884 interdit toute proposition de révision portant sur la forme républicaine : la clause de sortie prévue par les monarchistes sert à verrouiller la porte."},
+{q:"Le 14 juillet devient fête nationale en :",o:["1789","1880","1889","1919"],c:1,e:"Loi du 6 juillet 1880. La même année : amnistie des communards. En 1879 : retour à Paris et <i>Marseillaise</i> hymne national."}
+]},
+{n:9,t:"Une « société impériale » ?",s:"1885 · Ferry contre Clemenceau",qs:[
+{q:"Le discours de Clemenceau étudié date du :",o:["28 juillet 1885","30 juillet 1885","30 mars 1885","2 mars 1885"],c:1,e:"30 juillet 1885, lors de la discussion d'un crédit pour Madagascar. Ferry avait parlé deux jours plus tôt."},
+{q:"Le discours de Clemenceau du 30 juillet 1885 répond à :",s:"h-colonial",w:"La note du schéma date les deux interventions : Ferry le 28 juillet, Clemenceau le 30. Le second répond donc directement au premier, deux jours plus tard.",o:["À celui de Gambetta","À celui de Jules Ferry du 28 juillet 1885","À celui de Jaurès","À celui de Brazza"],c:1,e:"Le discours des « races supérieures » ayant le droit et le devoir de civiliser les « races inférieures »."},
+{q:"Quel plan Clemenceau annonce-t-il explicitement dans son discours de 1885 ?",o:["Militaire, religieux, moral","Économique, humanitaire, politique","Juridique et financier","Passé, présent, avenir"],c:1,e:"Il l'annonce et le suit à la lettre. Le relever en introduction de commentaire montre qu'on lit le texte comme une construction."},
+{q:"Combien d'hommes la France a-t-elle au Tonkin, selon Clemenceau ?",o:["12 000","20 000","35 000","100 000"],c:2,e:"35 000 hommes — qui, dit-il, en immobilisent 100 000. Le second chiffre est le distracteur classique."},
+{q:"Quelle colonie Clemenceau cite-t-il pour démontrer le coût réel de l'empire ?",o:["L'Algérie","La Cochinchine","La Tunisie","Le Sénégal"],c:1,e:"La « colonie modèle » coûte selon lui 11 millions par an. Il exige qu'on traite l'entreprise coloniale comme une entreprise commerciale, frais compris."},
+{q:"Comment Clemenceau retourne-t-il la thèse des « races supérieures » ?",o:["En citant la Bible","En rappelant que des savants allemands jugeaient les Français inférieurs","En invoquant Darwin","En citant la Déclaration de 1789 seulement"],c:1,e:"Si le critère se retourne si facilement, il ne vaut rien. Il invoque aussi la civilisation chinoise et Confucius."},
+{q:"Selon Clemenceau en 1885, la priorité de la France doit être :",o:["l'expansion en Afrique","la défense du sol national face à l'Allemagne","l'alliance russe","la marine"],c:1,e:"La France a perdu l'Alsace-Lorraine en 1871 et n'a pas d'armée coloniale. À l'intérieur : travaux, ports, écoles."},
+{q:"Le protectorat français sur la Tunisie date de :",s:"h-colonial",w:"La frise coloniale donne pour chaque territoire sa date et son acte fondateur. Cherchez la colonne où figure le traité du Bardo.",o:["1830","1881","1885","1896"],c:1,e:"Traité du Bardo, 1881. 1830 est l'Algérie ; 1896 l'annexion de Madagascar."},
+{q:"La conférence qui organise le partage de l'Afrique se tient à :",o:["Berlin, 1884-1885","Vienne, 1878","Paris, 1856","Londres, 1890"],c:0,e:"Novembre 1884 - février 1885, juste avant le discours : le partage est déjà organisé quand Clemenceau parle."},
+{q:"En 1885, la position de Clemenceau l'emporte-t-elle ?",o:["Oui, les crédits sont refusés","Non : les crédits sont votés et l'expansion continue","Oui, Ferry démissionne","Le débat est ajourné"],c:1,e:"En 1914, la France possède le deuxième empire colonial du monde. Son discours marque l'histoire des idées, pas la politique coloniale."},
+{q:"Ferry et Clemenceau s'opposent en tant que :",s:"h-colonial",w:"Le schéma montre que le débat traverse la République elle-même : les deux hommes appartiennent au même camp républicain et s'opposent sur la colonisation, pas sur le régime.",o:["républicain contre monarchiste","deux républicains","socialiste contre libéral","catholique contre laïque"],c:1,e:"Tous deux républicains, invoquant les mêmes principes de 1789. Présenter ce duel comme une opposition gauche-droite est l'erreur la plus fréquente."},
+{q:"Qu'est-ce qui a fait tomber le ministère Ferry en mars 1885 ?",s:"h-colonial",w:"La colonne 1885 de la frise porte la mention « Lang Son fait tomber Ferry ». C'est un revers militaire au Tonkin, amplifié par la dépêche, qui provoque la chute.",o:["l'affaire de Madagascar","la dépêche de Lang Son","la conférence de Berlin","une crise financière"],c:1,e:"Le revers du Tonkin lui vaut le surnom de « Ferry-Tonkin » et sa chute quatre mois avant le débat du fascicule."}
+]},
+{n:10,t:"La France radicale et la laïcité",s:"1901-1905 · Combes, Briand, la séparation",qs:[
+{q:"La caricature d'Émile Combes du fascicule est publiée dans :",o:["<i>Le Charivari</i>","<i>Le Pèlerin</i>","<i>L'Humanité</i>","<i>Le Petit Journal</i>"],c:1,e:"<i>Le Pèlerin</i>, hebdomadaire catholique lié aux assomptionnistes — même maison que <i>La Croix</i>, engagée dans le camp antidreyfusard."},
+{q:"Émile Combes est président du Conseil de :",o:["1899 à 1902","1902 à 1905","1905 à 1909","1906 à 1909"],c:1,e:"De juin 1902 à janvier 1905 : il tombe avant le vote de la loi de séparation. Distinction essentielle entre combisme et loi de 1905."},
+{q:"La majorité sur laquelle Combes s'appuie s'appelle :",o:["le Bloc national","le Bloc des gauches","le Cartel des gauches","l'Union sacrée"],c:1,e:"Issu des élections de 1902 : radicaux, républicains de gauche et socialistes, soudés par l'anticléricalisme."},
+{q:"La loi sur le contrat d'association date de :",o:["1881","1884","1901","1905"],c:2,e:"1<sup>er</sup> juillet 1901 : liberté d'association, sauf pour les congrégations, soumises à autorisation. C'est l'arme de Combes."},
+{q:"Dans la caricature de Combes (1902), les enfants qui fuient représentent :",o:["les orphelins","les élèves des écoles congréganistes fermées","les enfants d'ouvriers","les conscrits"],c:1,e:"L'enjeu réel du conflit est l'éducation : qui forme les futurs citoyens, l'Église ou la République ?"},
+{q:"Qui est le rapporteur de la loi de séparation ?",s:"h-laicite",w:"Le schéma aligne les trois laïcités de 1905 et précise sous l'une d'elles « c'est sa loi qui passe ». Le rapporteur est donc le tenant de la ligne libérale, celle qui sépare sans persécuter.",o:["Maurice Allard","Aristide Briand","Jean Jaurès","Émile Combes"],c:1,e:"Aristide Briand, dont la ligne libérale l'emporte : une séparation qui garantit la liberté de conscience et de culte."},
+{q:"En 1905, Maurice Allard défend une séparation :",s:"h-laicite",w:"La colonne centrale du schéma qualifie sa position de laïcité de combat : pour lui l'État doit lutter contre la religion, et non se contenter de s'en séparer.",o:["libérale","de combat, dans la tradition de 1793","concordataire","fédérale"],c:1,e:"Libre-penseur, il veut « achever l'œuvre de déchristianisation » de la Convention. Son contre-projet est repoussé."},
+{q:"En 1905, l'argument de Jaurès en faveur de la séparation est que :",s:"h-laicite",w:"La troisième colonne du schéma présente sa laïcité comme stratégique : la séparation sert la question sociale, elle n'est pas un but en soi. La note ajoute que le clivage traverse la gauche.",o:["l'Église doit être interdite","libérée de l'État, l'Église subira la pression de ses fidèles","l'État doit salarier les cultes","la religion disparaîtra d'elle-même"],c:1,e:"La liberté est plus corrosive pour une institution autoritaire que la persécution, qui la renforce."},
+{q:"La loi de séparation des Églises et de l'État est votée le :",o:["4 mars 1905","21 avril 1905","9 décembre 1905","1<sup>er</sup> juillet 1901"],c:2,e:"9 décembre 1905. Les deux autres dates sont celles des discours de Briand et de Jaurès."},
+{q:"L'article 2 de la loi énonce que la République :",o:["interdit les cultes","ne reconnaît, ne salarie ni ne subventionne aucun culte","contrôle les nominations","nationalise les églises"],c:1,e:"Trois verbes, et la fin du Concordat de 1801. L'article 1 garantit la liberté de conscience et le libre exercice des cultes."},
+{q:"Quel article de la loi de 1905 déclenche la crise des inventaires ?",o:["L'article 1","L'article 2","L'article 4","L'article 28"],c:2,e:"Il transfère les biens aux associations cultuelles : les inventaires sont vécus comme une profanation, et le pape interdit de constituer ces associations."},
+{q:"La crise des inventaires a lieu en :",o:["1902","1905","1906","1914"],c:2,e:"1906. Le gouvernement recule sur l'application : la loi survit parce qu'on renonce à l'imposer contre les croyants."}
+]},
+{n:11,t:"Les contradictions de la « Belle Époque »",s:"1906-1914 · Courrières, Jaurès, les suffragistes",qs:[
+{q:"La catastrophe de Courrières a lieu le :",s:"h-industrie",w:"La dernière colonne de la frise porte Courrières et son bilan. La date encadre aussi la loi de 1884 sur les syndicats, juste avant : l'accident relance le mouvement social.",o:["10 mars 1906","19 juin 1906","1<sup>er</sup> mai 1906","5 juillet 1914"],c:0,e:"Le 10 mars 1906 à 6 h 34 : un coup de poussier ravage 110 kilomètres de galeries. La plus grande catastrophe minière d'Europe."},
+{q:"Le bilan officiel de Courrières est de :",s:"h-industrie",w:"Le chiffre figure sous le nom de la mine sur la frise : il dépasse le millier de morts, ce qui en fait la plus grave catastrophe minière d'Europe.",o:["1 099 morts","1 400 morts","800 morts","2 000 morts"],c:0,e:"1 099 morts officiels. Jaurès avance 1 400 à la tribune : il faut attribuer ce chiffre à Jaurès, pas le donner comme un fait."},
+{q:"Le discours de Jaurès étudié date du :",o:["10 mars 1906","19 juin 1906","31 juillet 1914","21 avril 1905"],c:1,e:"Séance du 19 juin 1906, publiée au <i>Journal officiel</i> du lendemain."},
+{q:"Qui est le ministre de l'Intérieur qui interrompt Jaurès le 19 juin 1906 ?",o:["Aristide Briand","Georges Clemenceau","Ferdinand Sarrien","René Viviani"],c:1,e:"Clemenceau, en fonction depuis mars 1906 — le même homme qui dénonçait la colonisation en 1885. Il devient président du Conseil en octobre."},
+{q:"Quel surnom vaut à Clemenceau la répression des grèves de 1906 ?",o:["Le Tigre","Le briseur de grèves","Le Père la Victoire","Le Premier flic de France"],c:1,e:"Il mobilise des dizaines de milliers de soldats dans le bassin minier. « Père la Victoire » viendra de 1918."},
+{q:"« Fressenneville » renvoie à :",o:["une mine du Pas-de-Calais","une révolte ouvrière de 1906 dans la Somme","un procès","un journal"],c:1,e:"Le ministre l'oppose à Jaurès pour rappeler que la violence ouvrière existe, elle aussi."},
+{q:"« L'universelle vindicte patronale » désigne :",o:["les amendes","la mise à l'index des grévistes, rendus inemployables","les procès en diffamation","le lock-out"],c:1,e:"Les meneurs sont licenciés puis signalés aux autres employeurs par des « marques imperceptibles ». Une violence sans acte visible."},
+{q:"Jaurès est député de :",o:["Lens","Carmaux","Albi","Lille"],c:1,e:"Carmaux, dans le Tarn, depuis 1893, après la grève de 1892. Albi est le lieu de la verrerie ouvrière créée en 1896."},
+{q:"La thèse centrale du discours de Jaurès du 19 juin 1906 est que :",o:["les juges sont corrompus","il existe deux violences, dont une seule est punie","la grève doit être interdite","l'État doit nationaliser les mines"],c:1,e:"La violence ouvrière est visible et immédiatement sanctionnée ; la violence patronale se décide à huis clos et échappe à la justice."},
+{q:"Jaurès accuse-t-il nommément les juges ?",o:["Oui, de corruption","Non : il vise une inégalité structurelle","Oui, de partialité politique","Il ne parle pas de la justice"],c:1,e:"Il répète « je n'accuse pas les juges ». La responsabilité du « capital anonyme » se dilue : l'égalité devant la loi est vraie en droit, fausse en fait."},
+{q:"<i>L'Humanité</i> est fondée par Jaurès en :",o:["1898","1904","1906","1914"],c:1,e:"En 1904, l'année précédant la fondation de la SFIO."},
+{q:"Les femmes obtiennent le droit de vote en France en :",o:["1914","1919","1936","1944"],c:3,e:"Ordonnance du 21 avril 1944, premier vote en 1945. En 1919, la Chambre avait voté pour, mais le Sénat s'y est opposé."},
+{q:"La marche du 5 juillet 1914 se déroule :",o:["dans la violence","de façon légaliste et pacifique","en province seulement","sans femmes connues"],c:1,e:"Cortège endimanché conduit par Séverine : la stratégie française est légaliste, très loin des suffragettes britanniques."}
+]}
+];
+
+const CH_ROME = [
+{n:1,t:"Rome, des origines à la chute de la royauté",s:"v. Xe s.-509 · rois, site, Étrusques",qs:[
+{q:"La date de fondation de Rome au 21 avril 753 est :",o:["attestée par une inscription du Palatin","un calcul de Varron au I<sup>er</sup> s. av. J.-C.","la date donnée par Fabius Pictor","la date de la chute de Troie"],c:1,e:"La « date varronienne » est un calcul savant tardif. Fabius Pictor proposait 748, Timée 814 : les Anciens eux-mêmes ne s'accordaient pas."},
+{q:"Le <i>Latium vetus</i>, pays des Latins, est limité au nord par :",s:"r-site",w:"Le schéma montre le site de Rome au débouché du Tibre. Le fleuve que vous cherchez est celui qui borde la ville au nord-ouest et sert de limite au Latium : repérez son tracé et le gué qui le franchit, c'est la frontière avec l'Étrurie.",o:["l'Arno","le Tibre","le Pô","les monts Albains"],c:1,e:"Le Tibre sépare Latins et Étrusques. Rome est sur sa rive gauche, à la frontière nord du Latium : une ville-frontière."},
+{q:"Les <i>Feriae Latinae</i>, fête commune des Latins, se célèbrent :",o:["au Capitole","à Lavinium","sur le mont Albain","à Ostie"],c:2,e:"Sanctuaire de Jupiter Latiaris sur le mont Albain. Lavinium est le centre du culte des Pénates, le bois de Ferentina le lieu des assemblées."},
+{q:"Le roi auquel la tradition attribue le calendrier et les collèges de prêtres est :",o:["Romulus","Numa Pompilius","Tullus Hostilius","Ancus Marcius"],c:1,e:"Numa, roi sabin et pacifique, face à Romulus le guerrier : le couple fondateur guerre/religion."},
+{q:"Le roi auquel on attribue la fondation d'Ostie et le contrôle des salines est :",s:"r-site",w:"Regardez sur le schéma la mention « gué et sel » à l'embouchure : Ostie commande les salines et la sortie du Tibre. La fonction de passage dessinée ici est précisément ce que la tradition attribue au roi de la question.",o:["Ancus Marcius","Servius Tullius","Tarquin l'Ancien","Numa"],c:0,e:"Ancus Marcius, roi bâtisseur : pons Sublicius, Ostie, rite des féciaux. Le sel et le gué du Tibre sont les deux ressources du site."},
+{q:"Le nom étrusque « Mastarna », donné à Servius Tullius, nous est connu par :",o:["Tite-Live","Denys d'Halicarnasse","un discours de l'empereur Claude","Polybe"],c:2,e:"La Table claudienne de Lyon (48 apr. J.-C.), confirmée par la fresque de la tombe François à Vulci, qui écrit <i>Macstrna</i>."},
+{q:"Dans la réforme servienne, la majorité absolue des 193 centuries est atteinte par :",s:"r-cent",w:"Le schéma découpe les 193 centuries et rappelle en haut que la majorité est à 97. Comptez les blocs à partir de la gauche — chevaliers puis première classe — et vous voyez pourquoi le vote s'arrête avant d'atteindre les classes pauvres.",o:["les cinq classes réunies","les chevaliers et la première classe","les prolétaires","les quatre tribus urbaines"],c:1,e:"18 centuries de chevaliers + 80 de la première classe = 98 sur 193. Si elles votent d'accord, le vote s'arrête : tout le sens politique du système."},
+{q:"L'inscription du Lapis Niger, au Forum, atteste :",o:["l'emploi du mot <i>rex</i> au VI<sup>e</sup> s.","la date de 509","la loi des Douze Tables","le nom de Romulus"],c:0,e:"On y lit RECEI (<i>regi</i>, « au roi ») : la royauté n'est pas une invention des annalistes, même si le cippe ne donne ni date ni nom."},
+{q:"Le « mur servien » encore visible à Rome date en réalité :",o:["de Servius Tullius","de Romulus","de l'après-sac gaulois (IV<sup>e</sup> s.)","d'Auguste"],c:2,e:"Il est bâti en tuf de Grotta Oscura, carrières prises à Véies en 396 : sa construction se situe vers 378."},
+{q:"Le premier mur découvert au pied du Palatin (fouilles Carandini) est daté vers :",o:["1184","730-720","509","378"],c:1,e:"Vers 730-720. Son interprétation comme <i>pomerium</i> de Romulus est très discutée : 1184 est la date grecque de la chute de Troie."},
+{q:"La triade capitoline réunit :",o:["Mars, Quirinus et Jupiter","Jupiter, Junon et Minerve","Vesta et les Pénates","Cérès, Liber et Libera"],c:1,e:"Temple capitolin commencé par les Tarquins, dédié selon la tradition en 509. Cérès, Liber et Libera forment la triade plébéienne de l'Aventin."},
+{q:"La tradition compte, pour la royauté romaine :",o:["quatre rois","sept rois","douze rois","aucun roi"],c:1,e:"Sept rois pour 244 ans, soit 35 ans de règne en moyenne : une durée invraisemblable qui trahit un étirement chronologique."}]},
+{n:2,t:"La mise en place de la République romaine",s:"509-287 · patriciens, plèbe, constitution",qs:[
+{q:"La première sécession de la plèbe date de :",o:["509","494","449","287"],c:1,e:"494, sur le mont Sacré (l'Aventin selon une autre tradition). 449 est la seconde sécession, 287 la dernière, qui aboutit à la loi Hortensia."},
+{q:"Le nombre de tribuns de la plèbe est porté à dix en :",o:["494","471","457","367"],c:2,e:"457 selon Tite-Live. En 471, ils passent de deux à quatre ou cinq selon les versions : le distracteur est un vrai chiffre, mal placé."},
+{q:"L'interdiction du mariage entre patriciens et plébéiens, inscrite dans les Douze Tables, est abolie par :",o:["la loi Hortensia","la loi Ogulnia","la loi Canuleia","les lois Licinia-Sextia"],c:2,e:"La loi Canuleia, en 445, quatre ans seulement après la publication des tables."},
+{q:"Les lois Licinia-Sextia de 367 :",o:["ouvrent le consulat aux plébéiens","abolissent le <i>nexum</i>","créent le tribunat","rendent les plébiscites obligatoires"],c:0,e:"Un consul peut désormais être plébéien (L. Sextius en 366) ; elles créent aussi la préture. Le <i>nexum</i> tombe en 326, les plébiscites s'imposent en 287."},
+{q:"La loi qui rend les plébiscites obligatoires pour tous les citoyens est :",s:"r-assemblees",w:"Dans la colonne « Concile » du schéma, la dernière ligne porte la mention « plébiscites obligatoires (287) » : la date vous donne la loi, et la colonne rappelle que seuls les plébéiens y siègent.",o:["la loi Poetelia Papiria (326)","la loi Ogulnia (300)","la loi Hortensia (287)","la loi Villia (180)"],c:2,e:"La loi Hortensia, après une dernière sécession sur le Janicule. La loi Villia règle l'ordre des magistratures : rien à voir."},
+{q:"La loi Poetelia Papiria (326) :",o:["abolit l'asservissement pour dette","ouvre les sacerdoces aux plébéiens","crée la censure","fonde la colonie d'Ostie"],c:0,e:"Elle met fin au <i>nexum</i> : un citoyen ne peut plus être réduit en servitude pour sa dette."},
+{q:"Les consuls sont élus par :",s:"r-assemblees",w:"Le tableau des quatre assemblées donne pour chacune ce qu'elle élit. Cherchez la colonne où figurent les magistrats à imperium : c'est celle qui répond, et les trois autres colonnes montrent ce que font les assemblées concurrentes.",o:["les comices curiates","les comices centuriates","le concile de la plèbe","le Sénat"],c:1,e:"Les centuriates élisent tous les magistrats à <i>imperium</i> et les censeurs ; elles se réunissent au Champ de Mars, hors du <i>pomerium</i>."},
+{q:"La liste des sénateurs est dressée par :",s:"r-cursus",w:"Sur le cursus honorum, la case la plus haute porte « cens · liste du Sénat ». C'est la magistrature qui couronne la carrière, et cette attribution explique tout son prestige.",o:["les consuls","le grand pontife","les censeurs","les tribuns"],c:2,e:"Depuis la loi Ovinia (fin IV<sup>e</sup> s.), d'où le prestige de la censure, couronnement de la carrière."},
+{q:"Un dictateur est nommé pour une durée maximale de :",s:"r-cursus",w:"Le cursus sert ici de garde-fou : il montre que la censure dure dix-huit mois. La dictature, elle, est hors de ce cadre ordinaire et bien plus courte — d'où le piège entre les deux durées.",o:["six mois","un an","dix-huit mois","cinq ans"],c:0,e:"Six mois. Dix-huit mois est la durée du mandat des censeurs. La dictature sans limite de durée de Sylla (82) est une rupture."},
+{q:"Pour Polybe, l'élément monarchique de la constitution romaine est :",s:"r-polybe",w:"Le triangle de la constitution mixte associe chaque organe à un régime. Suivez la pointe étiquetée « élément monarchique » : elle désigne la magistrature annuelle et collégiale, pas la dictature, qui est exceptionnelle.",o:["le dictateur","les consuls","le <i>princeps senatus</i>","les tribuns"],c:1,e:"Les consuls ; le Sénat est l'élément aristocratique, le peuple l'élément démocratique. C'est la théorie de la constitution mixte (livre VI)."},
+{q:"Le premier plébéien consul, en 366, est :",o:["C. Licinius Stolo","L. Sextius","Q. Publilius Philo","C. Marcius Rutilus"],c:1,e:"L. Sextius. Licinius Stolo, son collègue tribun, ne le sera qu'en 364 puis 361 ; Publilius Philo est le premier préteur plébéien (337)."},
+{q:"La loi des Douze Tables est rédigée en :",o:["509-508","451-450","367-366","287"],c:1,e:"Dix tables en 451, deux de plus en 450, sous les décemvirs. L'affaire de Verginia provoque la seconde sécession en 449."}]},
+{n:3,t:"Rome la conquérante",s:"milieu V<sup>e</sup>-milieu II<sup>e</sup> s. · Italie et Méditerranée",qs:[
+{q:"La ligue latine est dissoute en :",s:"r-338",w:"Le schéma des statuts s'ouvre sur la date de la réorganisation qui suit la guerre latine. Tout l'éventail de statuts représenté — citoyens, municipes, alliés — naît de cette dissolution.",o:["493","396","338","272"],c:2,e:"338, après la guerre latine. 493 est le <i>foedus Cassianum</i>, 396 la prise de Véies, 272 la reddition de Tarente."},
+{q:"La <i>civitas sine suffragio</i> donne :",s:"r-338",w:"La colonne « Sine suffragio » du schéma porte en toutes lettres « charges sans le vote ». Comparez-la à la colonne voisine, la citoyenneté complète, pour voir exactement ce qui manque.",o:["le vote sans l'impôt","les obligations et les droits civils, mais pas le vote","le statut de colonie latine","l'exemption militaire"],c:1,e:"Une citoyenneté incomplète : impôt et service militaire, droits civils, mais pas de droit de vote. Capoue en est l'exemple type."},
+{q:"Dans la chronologie grecque de Polybe, le sac de Rome par les Gaulois est daté de :",o:["396","390","387/386","378"],c:2,e:"387/386 chez Polybe ; 390 est la date varronienne suivie par Tite-Live ; 378 celle du rempart dit « servien »."},
+{q:"Les Fourches Caudines (321) appartiennent à :",o:["la guerre latine","la deuxième guerre samnite","la guerre de Pyrrhus","la première guerre punique"],c:1,e:"Deuxième guerre samnite (326-304) : l'armée romaine passe sous le joug. Réponse de Rome : colonies et via Appia."},
+{q:"La via Appia est ouverte en 312 par le censeur :",o:["Appius Claudius Caecus","Camille","Fabius Maximus","Scipion l'Africain"],c:0,e:"Appius Claudius Caecus : la route relie Rome à Capoue et permet de tenir la Campanie contre les Samnites."},
+{q:"Pyrrhus est définitivement battu près de :",o:["Héraclée","Ausculum","Bénévent","Sentinum"],c:2,e:"Bénévent, en 275. Héraclée (280) et Ausculum (279) sont ses « victoires à la Pyrrhus », trop coûteuses pour être exploitées."},
+{q:"La première province romaine est :",s:"r-prov146",w:"Sur la carte de 146, chaque territoire porte sa date d'annexion. Cherchez la plus ancienne, 241 : c'est l'île prise au sortir de la première guerre punique.",o:["la Sardaigne","la Sicile","l'Hispanie","l'Afrique"],c:1,e:"La Sicile, en 241, après la première guerre punique — même si un préteur n'y est envoyé chaque année qu'à partir de 227."},
+{q:"La bataille de Cannes a lieu en :",s:"r-puniques",w:"La frise des trois guerres puniques aligne les batailles dans l'ordre. Sur la barre du milieu, Cannes vient après Trébie et Trasimène et avant Zama : la place dans la série donne la date.",o:["218","217","216","202"],c:2,e:"216 : la plus lourde défaite de Rome. Trébie 218, Trasimène 217, Zama 202 : les quatre dates forment le piège classique."},
+{q:"La « liberté des Grecs » est proclamée aux jeux Isthmiques de 196 par :",o:["Paul-Émile","Scipion l'Africain","Flamininus","Mummius"],c:2,e:"Flamininus, après Cynoscéphales (197). Cinquante ans plus tard, Mummius rase Corinthe : la « liberté » n'aura été qu'un protectorat."},
+{q:"La bataille de Pydna (168) met fin :",o:["à la royauté macédonienne","à la ligue achéenne","au royaume séleucide","à Carthage"],c:0,e:"Persée est le dernier roi de Macédoine ; le royaume est découpé en quatre républiques, et mille Achéens, dont Polybe, sont déportés."},
+{q:"Selon Polybe, Rome a soumis presque tout le monde habité en moins de :",o:["33 ans","53 ans","70 ans","un siècle"],c:1,e:"53 ans, de 220 à 167 : c'est la question qui ouvre ses <i>Histoires</i> et la problématique du chapitre."},
+{q:"L'année 146 voit la destruction de :",s:"r-prov146",w:"Deux entrées du schéma portent la même date : la ville d'Afrique rasée par Scipion Émilien et la cité grecque détruite par Mummius. La note du bas le dit explicitement.",o:["Numance et Carthage","Carthage et Corinthe","Corinthe et Syracuse","Véies et Carthage"],c:1,e:"Carthage par Scipion Émilien et Corinthe par Mummius : deux provinces nouvelles, Afrique et Macédoine."}]},
+{n:4,t:"Rome, des Gracques à leur chute",s:"133-121 · la question agraire",qs:[
+{q:"La <i>possessio</i> d'une terre de l'<i>ager publicus</i> est :",s:"r-ager",w:"La bande du haut représente la terre occupée avant la loi. La phrase du bas — « possession n'est pas propriété : l'État peut reprendre » — est exactement la définition demandée.",o:["la pleine propriété","une occupation révocable","une location aux enchères","un lot colonial"],c:1,e:"Une occupation de fait d'une terre du peuple romain, que l'État peut reprendre. La location aux enchères, c'est l'<i>ager censorius</i>."},
+{q:"La loi Sempronia de 133 fixe la limite de base par possesseur à :",s:"r-ager",w:"La bande du bas se coupe en deux : la part conservée par le possesseur et l'excédent repris. Le chiffre inscrit sur la part conservée est la limite de base, et la note ajoute le supplément par fils.",o:["30 jugères","250 jugères","500 jugères","1 000 jugères"],c:2,e:"500 jugères (≈ 125 ha), plus 250 par fils, avec un plafond probable de 1 000. 30 jugères est la taille de lot souvent citée pour les pauvres."},
+{q:"Le tribun destitué par le peuple en 133 est :",o:["M. Livius Drusus","M. Octavius","L. Opimius","P. Scipion Nasica"],c:1,e:"Octavius, dont le veto bloquait la loi : sa destitution est l'innovation qui fera accuser Tiberius de viser la royauté."},
+{q:"Le legs qui aggrave le conflit de 133 est celui de :",o:["Massinissa","Attale III de Pergame","Antiochos III","Ptolémée VIII"],c:1,e:"Attale III lègue son royaume au peuple romain : Tiberius veut en affecter le trésor à sa commission, empiétant sur les prérogatives du Sénat."},
+{q:"Le renoncement à une réforme agraire vaut à C. Laelius le surnom de :",o:["Cunctator","Sapiens","Africanus","Numidicus"],c:1,e:"<i>Sapiens</i>, « le Sage » — ou le prudent. <i>Cunctator</i> est Fabius, <i>Numidicus</i> un Metellus."},
+{q:"Cornélie, mère des Gracques, est la fille de :",o:["Scipion Émilien","Caton l'Ancien","Scipion l'Africain","Paul-Émile"],c:2,e:"Fille du vainqueur de Zama. Scipion Émilien est leur beau-frère : les Gracques sont au cœur de la plus haute noblesse."},
+{q:"La loi judiciaire de Caius Gracchus confie les jurys des procès de concussion :",o:["aux sénateurs","aux chevaliers","aux tribuns","au peuple entier"],c:1,e:"Aux chevaliers : c'est l'acte de naissance politique de l'ordre équestre, et un enjeu jusqu'à Sylla."},
+{q:"Le blé de la loi frumentaire de Caius est :",o:["distribué gratuitement","vendu 6 as ⅓ le boisseau","vendu au prix du marché","réservé aux vétérans"],c:1,e:"Prix fixe et réduit, pas gratuité : la distribution gratuite ne viendra qu'en 58, avec Clodius."},
+{q:"La colonie fondée par Caius Gracchus sur le site de Carthage s'appelle :",o:["Junonia","Neptunia","Narbo","Aquae Sextiae"],c:0,e:"Junonia, première colonie romaine hors d'Italie : son annulation sert de prétexte à ses adversaires en 121."},
+{q:"Le consul qui fait écraser Caius Gracchus en 121 est :",s:"r-gracques",w:"Sur la frise des Gracques, la colonne de 121 associe le sénatus-consulte ultime à la mort de Caius. Le magistrat qui l'applique est celui qui détient alors le pouvoir exécutif, pas un simple sénateur.",o:["Opimius","Scipion Émilien","Metellus Numidicus","Fulvius Flaccus"],c:0,e:"Opimius, armé du sénatus-consulte ultime ; Fulvius Flaccus est l'allié de Caius, tué avec lui. Opimius sera acquitté en 120."},
+{q:"La loi agraire de 111 :",s:"r-gracques",w:"La frise se referme sur 111, dernière colonne à droite. Elle clôt la séquence ouverte en 133 : la terre cesse d'être redistribuée et change de statut au profit de ceux qui l'occupent.",o:["relance les assignations","transforme les possessions en propriétés privées","fonde Junonia","donne la cité aux Latins"],c:1,e:"Conservée sur bronze (<i>CIL</i> I², 585), elle clôt l'ère gracquienne au profit des possesseurs."},
+{q:"Tiberius Gracchus est tué en 133 par un groupe conduit par :",s:"r-gracques",w:"La première colonne de la frise porte « tribun, puis tué ». Le meurtre de 133 se distingue de celui de 121 par l'absence de tout cadre légal : ici un pontife entraîne des sénateurs, là un consul agit sur mandat du Sénat.",o:["le consul Opimius","le grand pontife Scipion Nasica","le tribun Octavius","Scipion Émilien"],c:1,e:"Scipion Nasica, sans aucun mandat légal, entraîne des sénateurs : environ trois cents morts, les corps jetés au Tibre."}]},
+{n:5,t:"Rome et son Empire, de Marius à Sylla",s:"121-82 · Metelli, guerre des alliés, Mithridate",qs:[
+{q:"Le Metellus consul en 109 et chargé de la guerre contre Jugurtha est :",o:["Balearicus","Delmaticus","Numidicus","Macedonicus"],c:2,e:"Numidicus. Macedonicus, son oncle, est le vainqueur d'Andriscos ; Balearicus et Delmaticus sont consuls en 123 et 119."},
+{q:"Un <i>homo novus</i> est :",o:["un affranchi","le premier de sa famille à atteindre le consulat","un nouveau citoyen italien","un patricien adopté"],c:1,e:"Marius, puis Cicéron, en sont les exemples canoniques : sans ancêtres consulaires, ils doivent tout à leurs actes."},
+{q:"Marius est consul pour la première fois en :",s:"r-marius",w:"La frise de sa carrière donne chaque étape datée : la préture, puis le premier consulat, puis les consulats à répétition. Cherchez la case marquée « 1er consulat ».",o:["119","115","107","104"],c:2,e:"107, contre l'avis de son ancien chef Metellus ; 119 est son tribunat, 115 sa préture, 104 son deuxième consulat."},
+{q:"Les <i>capite censi</i> enrôlés par Marius en 107 sont :",s:"r-marius",w:"Le schéma place les capite censi à la date du premier consulat, au moment du recrutement. Le nom signifie « recensés par tête » : le schéma rappelle qu'ils n'ont aucune fortune à déclarer.",o:["les chevaliers","les citoyens recensés sans fortune","les alliés italiens","les vétérans"],c:1,e:"« Recensés par tête » : ils n'ont que leur personne. Leur place réelle dans les légions est aujourd'hui discutée (F. Cadiou)."},
+{q:"Jugurtha est livré aux Romains en 105 à :",o:["Marius","Metellus","Sylla","Scaurus"],c:2,e:"Le roi Bocchus le livre à Sylla, alors questeur de Marius : origine de leur rivalité et de la guerre civile."},
+{q:"Les Teutons sont écrasés en 102 à :",o:["Arausio","Aix (Aquae Sextiae)","Verceil","Noreia"],c:1,e:"Aix en 102, Verceil en 101 contre les Cimbres. Arausio (105) est au contraire la défaite qui rend Marius indispensable."},
+{q:"Le tribun allié de Marius, tué à Rome en 100, est :",o:["Sulpicius","Saturninus","Drusus","Glaucia"],c:1,e:"Saturninus, lapidé dans la Curie après un sénatus-consulte ultime que Marius, consul, doit appliquer contre ses propres alliés."},
+{q:"La capitale des insurgés italiens, rebaptisée <i>Italia</i>, est :",s:"r-italia",w:"Le schéma de la guerre des alliés place au centre la ville rebaptisée Italia, avec son sénat de 500 membres et ses deux consuls. Asculum, à côté, n'est pas la capitale mais le lieu du massacre initial.",o:["Asculum","Bovianum","Corfinium","Capoue"],c:2,e:"Corfinium, chez les Péligniens, avec un sénat de 500 membres, deux consuls et douze préteurs. Asculum est le lieu du massacre initial."},
+{q:"La loi qui donne la cité à tout Italien s'inscrivant à Rome dans les soixante jours est :",s:"r-italia",w:"Les trois lois sont alignées à droite du schéma, chacune avec sa clause. Cherchez celle de 89 dont la condition est un délai d'inscription : les deux autres récompensent les fidèles ou concernent le nord du Pô.",o:["la loi Licinia Mucia","la loi Iulia","la loi Plautia Papiria","la loi Pompeia"],c:2,e:"La loi Plautia Papiria (89). La loi Iulia (90) récompense les fidèles ; la loi Licinia Mucia (95) expulsait au contraire les faux citoyens."},
+{q:"L'auteur antique qui écrit que la guerre sociale « fut une guerre civile » est :",o:["Salluste","Appien","Florus","Plutarque"],c:2,e:"Florus, <i>Abrégé</i>, II, 6 : on peut l'appeler guerre des alliés pour en atténuer l'odieux, mais c'était une guerre civile. D'où le titre du cours."},
+{q:"La province d'Asie est organisée en :",o:["133","129","123","88"],c:1,e:"133 est le legs d'Attale III, 129 l'organisation de la province après la révolte d'Aristonicos ; 123 la loi fiscale de Caius Gracchus."},
+{q:"La paix de Dardanos (85) :",o:["supprime le royaume du Pont","laisse son royaume à Mithridate","donne l'Asie à Tigrane","crée la province de Bithynie"],c:1,e:"Mithridate évacue ses conquêtes, livre des navires et paie une indemnité, mais garde le Pont : Sylla est pressé de rentrer faire la guerre civile."}]}
+];
+
+const CH_GEO = [
+{n:1,t:"Les régions froides du monde",s:"TD 1 · zonal, azonal, inlandsis",qs:[
+{q:"Un inlandsis est :",s:"g-cryo",w:"Le schéma de la cryosphère sépare les cinq formes d'eau solide. La branche « inlandsis » est posée sur la terre ferme, alors que la branche « banquise » précise « eau de mer gelée » : la différence est toute la question.",o:["de l'eau de mer gelée","une calotte glaciaire continentale","un glacier de montagne","un sol gelé en permanence"],c:1,e:"Calotte de dimension continentale, épaisse de plusieurs kilomètres, posée sur la terre ferme. L'eau de mer gelée, c'est la banquise ; le sol gelé, le pergélisol."},
+{q:"Les deux inlandsis actuels sont :",s:"g-cryo",w:"Sous la branche « inlandsis », le schéma nomme les deux seules calottes existantes. Les autres régions froides citées dans les distracteurs relèvent des branches voisines.",o:["le Groenland et l'Antarctique","la Sibérie et l'Alaska","l'Arctique et le Groenland","l'Himalaya et l'Antarctique"],c:0,e:"Seuls le Groenland et l'Antarctique en portent aujourd'hui. Leur fonte, contrairement à celle de la banquise, élève le niveau de la mer."},
+{q:"Un froid dit « azonal » s'explique d'abord par :",s:"g-zones",w:"Le schéma des zones thermiques montre le froid qui s'organise en bandes parallèles selon la latitude. Tout ce qui produit du froid en dehors de ce classement — l'altitude par exemple — est par définition azonal.",o:["la latitude","un autre facteur que la latitude","la nuit polaire","la proximité de l'équateur"],c:1,e:"Altitude, courant marin froid, continentalité. Le zonal, lui, s'organise en bandes parallèles à l'équateur."},
+{q:"Un climat est dit froid lorsque le mois le plus chaud reste sous :",s:"g-zones",w:"Les bandes du schéma sont délimitées par des seuils de température. La bande polaire commence au seuil que vous cherchez, celui qui coïncide aussi avec la limite de l'arbre.",o:["0 °C","5 °C","10 °C","18 °C"],c:2,e:"La limite des 10 °C pour le mois le plus chaud, qui correspond aussi grosso modo à la limite de l'arbre."},
+{q:"La grande région froide absente de la carte des climats du TD est :",o:["la Sibérie","le Groenland","l'Antarctique","le Tibet"],c:2,e:"La carte s'arrête vers 60° S : c'est « l'immense région froide manquante » à ajouter sur la carte 3, avec l'océan Austral."},
+{q:"Le record mondial de froid mesuré, −89,2 °C en 1983, a été relevé :",o:["à Oïmiakon","à Vostok","au pôle Nord","à Klinck"],c:1,e:"Station russe de Vostok, en Antarctique. Klinck, au Groenland, détient le record de l'hémisphère Nord (−69,6 °C en 1991, homologué en 2020)."}]},
+{n:2,t:"Les facteurs du froid, sur terre et en mer",s:"TD 2 · coordonnées, facteurs, Arctique/Antarctique",qs:[
+{q:"La longitude se mesure :",s:"g-coord",w:"Le schéma distingue les parallèles des méridiens et donne sous chacun son amplitude. La ligne « longitude » du cadre indique l'intervalle et le sens ; ne la confondez pas avec la ligne « latitude » juste au-dessus.",o:["de 0 à 90°","de 0 à 180° Est ou Ouest","de 0 à 360° Nord","en mètres"],c:1,e:"À partir du méridien de Greenwich, adopté par la conférence de Washington en 1884. La latitude, elle, va de 0 à 90° Nord ou Sud."},
+{q:"Les cercles polaires se situent à la latitude de :",s:"g-coord",w:"Les parallèles remarquables sont tracés et cotés sur le schéma. Le cercle polaire est celui au-delà duquel apparaissent jour et nuit polaires ; le tropique, à 23° 26′, est l'autre valeur du piège.",o:["23° 26′","45°","66° 34′","80°"],c:2,e:"66° 34′ : au-delà, il existe au moins un jour polaire et une nuit polaire par an. 23° 26′ est la latitude des tropiques."},
+{q:"Le gradient thermique moyen dans l'atmosphère est d'environ :",s:"g-gradient",w:"Le schéma empile quatre altitudes avec leur température : 20 °C au niveau de la mer, 2 °C à 3 000 m. La flèche latérale donne directement la valeur par tranche de 100 mètres.",o:["−0,6 °C / 100 m","−6 °C / 100 m","−1 °C / 1 000 m","+0,6 °C / 100 m"],c:0,e:"Environ 0,6 °C de moins par tranche de 100 m : c'est le facteur « altitude », qui produit du froid azonal jusque sous l'équateur."},
+{q:"L'albédo le plus élevé est celui :",s:"g-albedo",w:"Le schéma classe les surfaces de la plus réfléchissante à la moins réfléchissante. La barre du haut est celle que vous cherchez ; celle du bas, la mer libre, montre l'écart qui déclenche la rétroaction.",o:["de la mer libre","de la forêt de conifères","du pack dense d'hiver","des surfaces rocheuses"],c:2,e:"75 à 80 % contre 5 à 15 % pour la mer libre : d'où la rétroaction, la fonte de la glace faisant absorber davantage d'énergie."},
+{q:"Le versant ensoleillé d'une vallée s'appelle :",s:"g-adret",w:"La coupe de vallée oppose les deux versants avec leur nom. Le côté exposé au soleil porte l'étiquette demandée, et la note rappelle que ce facteur joue à l'échelle locale, pas à celle des zones climatiques.",o:["l'ubac","l'adret","le levant","le nunatak"],c:1,e:"Adret (soulane dans les Pyrénées) ; l'ubac est le versant d'ombre. Ce facteur joue à l'échelle locale, pas à l'échelle des zones climatiques."},
+{q:"Le traité qui régit l'Antarctique date de :",s:"g-poles",w:"La colonne « Antarctique » du schéma porte la date de son traité, avec la limite du 60° Sud. Attention à ne pas prendre la date de la colonne Arctique, qui est celle du Conseil de l'Arctique.",o:["1920","1959","1991","1996"],c:1,e:"Signé à Washington en 1959, en vigueur en 1961. 1991 est le protocole de Madrid (mines interdites), 1996 le Conseil de l'Arctique, 1920 le traité du Svalbard."}]},
+{n:3,t:"Les représentations liées au froid extrême",s:"TD 3 · Lovecraft et l'Antarctique",qs:[
+{q:"Le mont Erebus, cité par Lovecraft, est :",o:["un volcan éteint","un volcan actif","un nunatak","le point culminant de l'Antarctique"],c:1,e:"3 794 m : c'est le volcan en activité le plus austral du monde. Le mont Terror, son voisin, est éteint."},
+{q:"Le point culminant de l'Antarctique est :",s:"g-poles",w:"Le schéma rappelle que l'Antarctique est un continent recouvert d'un inlandsis, donc un relief massif. Le sommet cherché est un mont de plus de 4 800 m, pas le volcan côtier ni le pôle géographique.",o:["le mont Erebus","le mont Vinson","le mont Terror","le pôle Sud"],c:1,e:"4 892 m. Le « plateau à 20 000 pieds » (≈ 6 100 m) de la nouvelle est donc une invention."},
+{q:"Le premier à atteindre le pôle Sud est :",o:["Scott","Shackleton","Amundsen","Byrd"],c:2,e:"Amundsen, le 14 décembre 1911 ; Scott y parvient le 17 janvier 1912 et meurt au retour. Byrd survole le pôle en 1929."},
+{q:"L'idée d'un Antarctique jadis tempéré et tropical est :",o:["une invention de Lovecraft","exacte : le continent appartenait au Gondwana","un mirage polaire","une règle du jeu de plateau"],c:1,e:"Exacte : l'expédition Scott avait rapporté des fossiles de plantes. Lovecraft utilise ce savoir réel pour rendre crédible sa cité imaginaire."},
+{q:"La nouvelle <i>Les Montagnes hallucinées</i> paraît pour la première fois en :",o:["1931","1932","1936","2019"],c:2,e:"Écrite en février-mars 1931, refusée par <i>Weird Tales</i>, elle paraît en feuilleton en 1936 dans <i>Astounding Stories</i>."},
+{q:"Étudier les représentations en géographie sert à :",o:["rien, ce sont des fictions","comprendre comment l'imaginaire oriente les pratiques","remplacer les cartes","dater les textes littéraires"],c:1,e:"Tourisme de l'extrême, discours sur la « nature sauvage », décisions politiques : les images font agir les sociétés."}]},
+{n:4,t:"Les représentations cartographiques",s:"TD 4 · projections, cadrage, orientation",qs:[
+{q:"Une projection conforme conserve :",s:"g-proj",w:"Le schéma aligne trois projections avec ce que chacune préserve. Sous Mercator, la mention « conforme » est suivie de « angles justes, pôles démesurés » : la conservation et son prix sont donnés ensemble.",o:["les surfaces","les angles","les distances partout","aucune grandeur"],c:1,e:"Les angles, donc les formes locales : c'est le cas de Mercator, utile à la navigation mais qui enfle les hautes latitudes."},
+{q:"La projection de Peters est :",s:"g-proj",w:"La colonne centrale du schéma porte la mention qui répond, avec sa conséquence : surfaces exactes mais formes étirées. Comparez-la à Mercator, sa voisine de gauche, qui fait l'inverse.",o:["conforme","équivalente","azimutale","conique"],c:1,e:"Équivalente : elle conserve les surfaces, au prix de formes très étirées. Elle reprend une projection de Gall (1855)."},
+{q:"Pour représenter tout l'Arctique d'un seul tenant, on choisit :",s:"g-proj",w:"La troisième colonne du schéma est explicitement désignée comme « la bonne carte pour l'Arctique » : elle montre un pôle d'un seul tenant, là où les deux autres le découpent ou le dilatent.",o:["Mercator","une projection azimutale polaire","Peters","une projection conique"],c:1,e:"Centrée sur le pôle : c'est la seule qui montre la région polaire sans la découper ni la dilater démesurément."},
+{q:"La projection de la carte de la cryosphère du TD est celle de :",s:"g-fuller",w:"Le schéma montre le globe déplié en vingt triangles, un icosaèdre. Cette construction très particulière est la signature de la projection cherchée.",o:["Mollweide","Winkel","Fuller (Dymaxion)","Lambert"],c:2,e:"Le globe est déplié en vingt triangles (icosaèdre) : continents peu déformés, mais océans découpés et aucune orientation privilégiée."},
+{q:"« Austral » signifie :",o:["de l'est","du nord","du sud","de l'ouest"],c:2,e:"Austral = du sud (cf. Australie) ; boréal = du nord (cf. aurore boréale). Septentrional/méridional, oriental/occidental fonctionnent par paires."},
+{q:"Le pergélisol fait partie :",s:"g-cryo",w:"Le pergélisol est l'une des cinq branches du schéma, sous le titre « toutes les surfaces où l'eau est solide ». C'est ce titre qui nomme l'ensemble et donne la réponse.",o:["de la biosphère","de la cryosphère","de l'atmosphère","de l'hydrosphère seulement"],c:1,e:"La cryosphère réunit neige, banquise, glaciers, inlandsis et sols gelés en permanence."}]},
+{n:5,t:"Aborder les mondes du froid à différentes échelles",s:"TD 5 · Sibérie, échelles, Kolyma",qs:[
+{q:"Laquelle de ces échelles est la plus grande ?",s:"g-echelle",w:"Le cadre « échelle cartographique » du schéma donne la règle avec deux exemples opposés : 1/25 000 est grande, 1/50 000 000 est petite. Plus le dénominateur est petit, plus l'échelle est grande.",o:["1/1 000 000","1/25 000","1/250 000","1/50 000 000"],c:1,e:"Grande échelle = petit dénominateur = petit espace très détaillé."},
+{q:"À l'échelle 1/100 000, un centimètre sur la carte représente :",o:["100 m","1 km","10 km","100 km"],c:1,e:"100 000 cm = 1 km. Astuce : retirer cinq zéros au dénominateur donne les kilomètres par centimètre."},
+{q:"Une carte à petite échelle montre :",s:"g-echelle",w:"Le schéma emboîte la Russie entière, en petite échelle, et la vallée de la Kolyma, en grande échelle. Comparez les deux cadres : l'un couvre beaucoup d'espace et peu de détail, l'autre l'inverse.",o:["un petit espace détaillé","un grand espace peu détaillé","une ville","un quartier"],c:1,e:"C'est le cas de la carte des densités de la Russie, qui fait apparaître le vide sibérien mais pas les camps et villages."},
+{q:"L'échelle qui reste juste après agrandissement ou réduction d'une carte est :",o:["l'échelle numérique","l'échelle graphique","l'échelle géographique","aucune"],c:1,e:"La barre graduée s'agrandit avec la carte ; la fraction, elle, devient fausse."},
+{q:"« L'échelle régionale » désigne :",s:"g-echelle",w:"Le schéma distingue nettement deux colonnes : l'échelle cartographique, un rapport de réduction, et l'échelle géographique, un niveau d'analyse. « Régional » figure dans la seconde.",o:["une échelle cartographique","une échelle géographique","une échelle graphique","une projection"],c:1,e:"L'échelle géographique est un niveau d'analyse (local, régional, national, mondial), pas un rapport de réduction."},
+{q:"Le peuple autochtone étudié dans la vallée de la Kolyma est celui des :",o:["Youkaguirs","Gwich'in","Even","Sames"],c:0,e:"Les Youkaguirs, l'un des plus petits peuples autochtones de Sibérie orientale. Les Even sont au Kamtchatka (TD 7), les Gwich'in en Alaska."}]},
+{n:6,t:"Vivre à Nuuk",s:"TD 6 · capitale arctique, géographie subjective",qs:[
+{q:"Nuuk est la capitale :",o:["d'un État souverain","d'un territoire autonome du Royaume de Danemark","d'une province canadienne","de l'Islande"],c:1,e:"Le Groenland est un territoire autonome ; Nuuk concentre plus du tiers des quelque 56 000 habitants du pays."},
+{q:"Le « complexe scalaire » décrit par N. Escach désigne :",s:"g-nuuk",w:"Le schéma place Nuuk entre un village de 300 habitants et les métropoles mondiales, avec les mots « gigantesque » et « minuscule » de part et d'autre. C'est ce double regard, selon d'où l'on vient, que nomme l'expression.",o:["un problème de projection","une ville perçue comme immense ou minuscule selon d'où l'on vient","un quartier neuf","un type de cadastre"],c:1,e:"Gigantesque pour qui quitte un village groenlandais, minuscule vue du reste du monde : le nouveau citadin est pris de vertige."},
+{q:"Depuis novembre 2024, la piste de l'aéroport de Nuuk mesure :",o:["950 m","1 500 m","2 200 m","3 000 m"],c:2,e:"Le texte décrit encore les 950 m de l'ancienne piste ; la nouvelle, inaugurée le 28 novembre 2024, permet des vols directs vers Copenhague."},
+{q:"La commune dont Nuuk est le chef-lieu est :",s:"g-nuuk",w:"Le schéma rappelle le poids de Nuuk dans son territoire. La commune cherchée est celle, immense, qui couvre les deux côtes et dont dépend même Tasiilaq, à 685 km de là.",o:["Sermersooq","Kangerlussuaq","Tasiilaq","Qassiarsuk"],c:0,e:"Sermersooq, 531 900 km², plus vaste que l'Espagne : Tasiilaq, sur l'autre côte, en dépend et se trouve à 685 km."},
+{q:"Dans une référence bibliographique, la mention « (dir.) » signale :",o:["le directeur de collection","les directeurs de l'ouvrage collectif","l'éditeur","l'illustrateur"],c:1,e:"Ici Escach, Escudé et Goffin, qui dirigent <i>Arctique</i> (ENS Éditions, coll. « Odyssée, villes-portraits », 2023)."},
+{q:"La collection « Odyssée, villes-portraits » relève :",o:["de l'atlas statistique","d'une géographie subjective proche de la littérature de voyage","du guide touristique","du roman policier"],c:1,e:"Textes à la première personne et cartes subjectives dessinées : le titre annonce la méthode, voyage et portrait."}]},
+{n:7,t:"Des peuples face aux changements",s:"TD 7 · Even, Gwich'in, anthropologie",qs:[
+{q:"Celui qui s'immerge longuement sur un terrain et le décrit est :",o:["l'ethnographe","l'ethnologue","le géographe","le cartographe"],c:0,e:"L'ethnographe fait le terrain ; l'ethnologue compare à l'échelle d'une aire culturelle ; l'anthropologue théorise la vie sociale."},
+{q:"Dans l'animisme tel que le définit Philippe Descola, les non-humains :",o:["ont un corps identique au nôtre","partagent avec les humains une intériorité semblable","n'ont aucune âme","descendent des dieux"],c:1,e:"Intériorité commune, physicalités différentes. Nos sociétés, elles, sont « naturalistes » et séparent nature et culture."},
+{q:"Les Even du Kamtchatka sont traditionnellement :",o:["chasseurs de baleines","éleveurs de rennes","agriculteurs","marchands"],c:1,e:"Éleveurs de rennes de langue toungouso-mandchoue, sédentarisés à l'époque soviétique ; certains repartent en forêt après 1991."},
+{q:"Les Gwich'in étudiés par Nastassja Martin vivent :",o:["au Kamtchatka","en Alaska","au Groenland","au Svalbard"],c:1,e:"Chasseurs-cueilleurs d'Alaska, confrontés au réchauffement, aux compagnies extractives et aux discours écologistes sur la nature vierge."},
+{q:"<i>Croire aux fauves</i> (2019) est :",o:["une thèse","un récit littéraire","un atlas","un compte rendu de lecture"],c:1,e:"Récit de sa rencontre avec un ours au Kamtchatka, prix Joseph Kessel 2020 : ce n'est pas un ouvrage de recherche, contrairement aux deux essais."},
+{q:"Le Kamtchatka est resté une zone militaire fermée jusqu'en :",o:["1867","1945","1991","2014"],c:2,e:"Jusqu'à l'implosion de l'URSS. 1867 est la vente de l'Alaska russe aux États-Unis."}]},
+{n:8,t:"Les villes russes du Spitzberg",s:"TD 8 · du charbon au tourisme",qs:[
+{q:"Le Svalbard est sous souveraineté :",s:"g-svalbard",w:"Le cadre du traité, à droite du schéma, énonce les trois clauses dans l'ordre : la souveraineté, l'accès égal aux ressources, la démilitarisation. La première ligne répond.",o:["russe","norvégienne","danoise","internationale"],c:1,e:"Norvégienne depuis le traité de 1920, entré en vigueur en 1925 ; l'archipel est aussi déclaré zone démilitarisée."},
+{q:"Le traité du Spitzberg est signé en :",s:"g-svalbard",w:"La date complète figure en tête du cadre du traité. Elle explique aussi la carte de gauche : c'est l'accès égal aux ressources qui permet des villes russes dans un archipel norvégien.",o:["1867","1920","1959","1998"],c:1,e:"Le 9 février 1920 à Paris : il reconnaît la souveraineté norvégienne tout en donnant aux signataires un accès égal aux ressources."},
+{q:"La compagnie russe qui exploite le charbon au Svalbard est :",o:["Gazprom","Arktikugol","Hurtigruten","Store Norske"],c:1,e:"Arktikugol, compagnie d'État, présente depuis 1932. Store Norske est son homologue norvégienne."},
+{q:"La ville russe devenue ville fantôme est :",s:"g-svalbard",w:"Deux villes russes sont portées sur la carte, avec leur sort en légende : l'une est habitée, l'autre fermée en 1998. C'est cette seconde mention qui désigne la ville fantôme.",o:["Barentsburg","Longyearbyen","Pyramiden","Ny-Ålesund"],c:2,e:"Pyramiden, dont la mine ferme en 1998 : elle se visite aujourd'hui comme un musée soviétique à ciel ouvert."},
+{q:"Selon A. Delmas, le tourisme polaire commence, dans l'hémisphère Nord, vers :",o:["50° N","60° N","66° 34′ N","80° N"],c:1,e:"Au-delà du 60<sup>e</sup> parallèle Nord et du 50<sup>e</sup> Sud, avec plus de dix millions de visiteurs par an, très inégalement répartis."},
+{q:"Ce que le traité impose au Svalbard, outre la souveraineté norvégienne :",o:["la démilitarisation et l'égalité d'accès aux ressources","l'interdiction des mines","la souveraineté partagée avec la Russie","l'interdiction du tourisme"],c:0,e:"C'est cette égalité d'accès qui explique la présence de villes minières russes dans un archipel norvégien."}]}
+];
+
+const SCH_ROME = {
+
+"r-site": `<svg class="sch" viewBox="-3 -3 406 235"><title>Le site de Rome</title>
+<path d="M40 8 C70 60,20 110,60 150 C90 182,80 196,110 210" fill="none" stroke="var(--blue)" stroke-width="7" opacity=".28"/>
+<path d="M40 8 C70 60,20 110,60 150 C90 182,80 196,110 210" fill="none" stroke="var(--blue)" stroke-width="1" opacity=".55"/>
+<text class="t2" x="6" y="20" fill="var(--blue)">Tibre</text>
+<ellipse cx="47" cy="128" rx="12" ry="6" fill="var(--card)" stroke="var(--line)"/>
+<text class="sm" x="62" y="132">île Tibérine</text>
+<circle cx="132" cy="56" r="26" fill="var(--gold)" opacity=".2"/><circle cx="132" cy="56" r="26" fill="none" stroke="var(--gold)"/>
+<text class="t2" x="132" y="60" text-anchor="middle">Capitole</text>
+<circle cx="150" cy="140" r="28" fill="var(--red)" opacity=".2"/><circle cx="150" cy="140" r="28" fill="none" stroke="var(--red)"/>
+<text class="t2" x="150" y="144" text-anchor="middle">Palatin</text>
+<text class="sm" x="150" y="180" text-anchor="middle">cabanes v. 750</text>
+<rect x="196" y="86" width="86" height="34" rx="4" fill="var(--card)" stroke="var(--line)"/>
+<text x="239" y="101" text-anchor="middle">Forum</text><text class="sm" x="239" y="114" text-anchor="middle">pavé v. 600</text>
+<circle cx="316" cy="40" r="20" fill="var(--muted)" opacity=".15"/><text class="sm" x="316" y="44" text-anchor="middle">Quirinal</text>
+<circle cx="352" cy="96" r="20" fill="var(--muted)" opacity=".15"/><text class="sm" x="352" y="100" text-anchor="middle">Esquilin</text>
+<circle cx="316" cy="152" r="20" fill="var(--muted)" opacity=".15"/><text class="sm" x="316" y="156" text-anchor="middle">Caelius</text>
+<circle cx="230" cy="176" r="20" fill="var(--muted)" opacity=".15"/><text class="sm" x="230" y="180" text-anchor="middle">Aventin</text>
+<line x1="62" y1="112" x2="104" y2="96" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/>
+<text class="sm" x="70" y="92">gué et sel</text>
+<text x="0" y="212">Rome naît d'une fonction de passage : le gué, le sel,</text>
+<text x="0" y="226">et la frontière entre Latins, Étrusques et Sabins.</text></svg>`,
+
+"r-cent": `<svg class="sch" viewBox="-6 -8 412 144"><title>Les 193 centuries</title>
+<text class="t2" x="0" y="12">193 centuries — la majorité est à 97</text>
+<rect x="0" y="24" width="37" height="26" fill="var(--red)" opacity=".75"/>
+<rect x="37" y="24" width="166" height="26" fill="var(--red)" opacity=".45"/>
+<rect x="203" y="24" width="41" height="26" fill="var(--muted)" opacity=".3"/>
+<rect x="244" y="24" width="42" height="26" fill="var(--muted)" opacity=".25"/>
+<rect x="286" y="24" width="41" height="26" fill="var(--muted)" opacity=".2"/>
+<rect x="327" y="24" width="62" height="26" fill="var(--muted)" opacity=".15"/>
+<rect x="389" y="24" width="11" height="26" fill="var(--muted)" opacity=".1"/>
+<rect x="0" y="24" width="400" height="26" fill="none" stroke="var(--line)"/>
+<line x1="203" y1="18" x2="203" y2="60" stroke="var(--red)" stroke-width="1.5"/>
+<text class="t2" x="199" y="72" text-anchor="end" fill="var(--red)">98 centuries suffisent</text>
+<text class="sm" x="18" y="40" text-anchor="middle" fill="#fff">18</text>
+<text class="sm" x="120" y="41" text-anchor="middle" fill="var(--ink)">80 · 1re classe</text>
+<text class="sm" x="223" y="41" text-anchor="middle">20</text><text class="sm" x="265" y="41" text-anchor="middle">20</text>
+<text class="sm" x="306" y="41" text-anchor="middle">20</text><text class="sm" x="358" y="41" text-anchor="middle">30</text>
+<text class="sm" x="0" y="95">Chevaliers + 1re classe votent en premier :</text>
+<text class="sm" x="0" y="108">s'ils sont d'accord, le vote s'arrête là.</text>
+<text class="sm" x="0" y="121">Les 5 prolétaires ne votent presque jamais.</text></svg>`,
+
+"r-cursus": `<svg class="sch" viewBox="-6 -6 412 212"><title>Le cursus honorum</title>
+<rect x="0" y="162" width="150" height="30" rx="4" fill="var(--blue)" opacity=".15"/><rect x="0" y="162" width="150" height="30" rx="4" fill="none" stroke="var(--blue)"/>
+<text class="t2" x="10" y="176">Questeur</text><text class="sm" x="10" y="188">finances · 2 puis 8</text>
+<rect x="30" y="126" width="150" height="30" rx="4" fill="var(--blue)" opacity=".2"/><rect x="30" y="126" width="150" height="30" rx="4" fill="none" stroke="var(--blue)"/>
+<text class="t2" x="40" y="140">Édile</text><text class="sm" x="40" y="152">jeux · police · blé</text>
+<rect x="60" y="90" width="150" height="30" rx="4" fill="var(--blue)" opacity=".3"/><rect x="60" y="90" width="150" height="30" rx="4" fill="none" stroke="var(--blue)"/>
+<text class="t2" x="70" y="104">Préteur</text><text class="sm" x="70" y="116">justice · imperium</text>
+<rect x="90" y="54" width="150" height="30" rx="4" fill="var(--red)" opacity=".25"/><rect x="90" y="54" width="150" height="30" rx="4" fill="none" stroke="var(--red)"/>
+<text class="t2" x="100" y="68">Consul</text><text class="sm" x="100" y="80">2 · armées · 12 licteurs</text>
+<rect x="120" y="18" width="150" height="30" rx="4" fill="var(--gold)" opacity=".25"/><rect x="120" y="18" width="150" height="30" rx="4" fill="none" stroke="var(--gold)"/>
+<text class="t2" x="130" y="32">Censeur</text><text class="sm" x="130" y="44">cens · liste du Sénat</text>
+<rect x="288" y="90" width="112" height="44" rx="4" fill="var(--card)" stroke="var(--line)" stroke-dasharray="4 3"/>
+<text class="t2" x="344" y="106" text-anchor="middle">Tribun</text><text class="sm" x="344" y="118" text-anchor="middle">hors cursus</text>
+<text class="sm" x="344" y="129" text-anchor="middle">veto · plébéiens</text>
+<text class="sm" x="0" y="12">Loi Villia (180) : ordre et âges imposés</text></svg>`,
+
+"r-assemblees": `<svg class="sch" viewBox="-6 -6 414 162"><title>Les assemblées romaines</title>
+<rect x="0" y="16" width="94" height="86" rx="5" fill="var(--muted)" opacity=".12"/><rect x="0" y="16" width="94" height="86" rx="5" fill="none" stroke="var(--line)"/>
+<text class="t2" x="47" y="34" text-anchor="middle">Curiates</text><text class="sm" x="47" y="50" text-anchor="middle">30 curies</text><text class="sm" x="47" y="64" text-anchor="middle">survivance</text><text class="sm" x="47" y="78" text-anchor="middle">royale</text><text class="sm" x="47" y="92" text-anchor="middle">lex curiata</text>
+<rect x="102" y="16" width="94" height="86" rx="5" fill="var(--red)" opacity=".14"/><rect x="102" y="16" width="94" height="86" rx="5" fill="none" stroke="var(--red)"/>
+<text class="t2" x="149" y="34" text-anchor="middle">Centuriates</text><text class="sm" x="149" y="50" text-anchor="middle">193 centuries</text><text class="sm" x="149" y="64" text-anchor="middle">par fortune</text><text class="sm" x="149" y="78" text-anchor="middle">consuls, préteurs</text><text class="sm" x="149" y="92" text-anchor="middle">censeurs, guerre</text>
+<rect x="204" y="16" width="94" height="86" rx="5" fill="var(--blue)" opacity=".14"/><rect x="204" y="16" width="94" height="86" rx="5" fill="none" stroke="var(--blue)"/>
+<text class="t2" x="251" y="34" text-anchor="middle">Tributes</text><text class="sm" x="251" y="50" text-anchor="middle">35 tribus</text><text class="sm" x="251" y="64" text-anchor="middle">par domicile</text><text class="sm" x="251" y="78" text-anchor="middle">questeurs</text><text class="sm" x="251" y="92" text-anchor="middle">édiles curules</text>
+<rect x="306" y="16" width="94" height="86" rx="5" fill="var(--gold)" opacity=".16"/><rect x="306" y="16" width="94" height="86" rx="5" fill="none" stroke="var(--gold)"/>
+<text class="t2" x="353" y="34" text-anchor="middle">Concile</text><text class="sm" x="353" y="50" text-anchor="middle">plébéiens seuls</text><text class="sm" x="353" y="64" text-anchor="middle">tribuns, édiles</text><text class="sm" x="353" y="78" text-anchor="middle">plébiscites</text><text class="sm" x="353" y="92" text-anchor="middle">obligatoires (287)</text>
+<text class="sm" x="0" y="122">On ne vote jamais par tête : toujours par unités.</text>
+<text class="sm" x="0" y="136">Le peuple répond oui ou non ; il ne propose ni ne débat.</text></svg>`,
+
+"r-338": `<svg class="sch" viewBox="-6 -6 412 190"><title>Les statuts après 338</title>
+<ellipse cx="200" cy="86" rx="196" ry="76" fill="var(--muted)" opacity=".08"/><ellipse cx="200" cy="86" rx="196" ry="76" fill="none" stroke="var(--line)"/>
+<ellipse cx="200" cy="86" rx="146" ry="60" fill="var(--gold)" opacity=".13"/><ellipse cx="200" cy="86" rx="146" ry="60" fill="none" stroke="var(--gold)"/>
+<ellipse cx="200" cy="86" rx="96" ry="42" fill="var(--blue)" opacity=".15"/><ellipse cx="200" cy="86" rx="96" ry="42" fill="none" stroke="var(--blue)"/>
+<ellipse cx="200" cy="86" rx="48" ry="24" fill="var(--red)" opacity=".22"/><ellipse cx="200" cy="86" rx="48" ry="24" fill="none" stroke="var(--red)"/>
+<text class="t2" x="200" y="84" text-anchor="middle">Rome</text><text class="sm" x="200" y="96" text-anchor="middle">citoyens</text>
+<text class="t2" x="200" y="58" text-anchor="middle">Municipes</text>
+<text class="t2" x="200" y="38" text-anchor="middle">Sine suffragio</text>
+<text class="sm" x="200" y="20" text-anchor="middle">Latins et alliés — traités séparés</text>
+<text class="sm" x="200" y="120" text-anchor="middle">citoyenneté complète</text>
+<text class="sm" x="200" y="138" text-anchor="middle">charges sans le vote</text>
+<text class="sm" x="200" y="156" text-anchor="middle">fournissent des soldats, pas de tribut</text>
+<text class="sm" x="0" y="174">Diviser, graduer, promettre : le système tient jusqu'en 91.</text></svg>`,
+
+"r-puniques": `<svg class="sch" viewBox="-6 -6 412 152"><title>Les trois guerres puniques</title>
+<line x1="8" y1="46" x2="392" y2="46" stroke="var(--line)" stroke-width="1.5"/>
+<rect x="8" y="34" width="86" height="24" rx="3" fill="var(--blue)" opacity=".22"/>
+<rect x="188" y="34" width="70" height="24" rx="3" fill="var(--red)" opacity=".25"/>
+<rect x="330" y="34" width="24" height="24" rx="3" fill="var(--gold)" opacity=".3"/>
+<text class="t2" x="51" y="50" text-anchor="middle">264-241</text>
+<text class="t2" x="223" y="50" text-anchor="middle">218-201</text>
+<text class="t2" x="342" y="50" text-anchor="middle">149-146</text>
+<text class="sm" x="51" y="24" text-anchor="middle">1re · la Sicile</text>
+<text class="sm" x="223" y="24" text-anchor="middle">2e · la survie</text>
+<text class="sm" x="342" y="24" text-anchor="middle">3e · l'anéantissement</text>
+<text class="sm" x="51" y="74" text-anchor="middle">Mylae 260</text><text class="sm" x="51" y="86" text-anchor="middle">Égates 241</text>
+<text class="sm" x="51" y="100" text-anchor="middle">Sicile, 1re province</text>
+<text class="sm" x="223" y="74" text-anchor="middle">Trébie 218, Trasimène 217</text>
+<text class="sm" x="223" y="86" text-anchor="middle">Cannes 216, Zama 202</text>
+<text class="sm" x="223" y="100" text-anchor="middle">Hispanies en 197</text>
+<text class="sm" x="342" y="74" text-anchor="middle">Carthage rasée</text>
+<text class="sm" x="342" y="86" text-anchor="middle">province d'Afrique</text>
+<text class="sm" x="8" y="130">146 : Carthage et Corinthe détruites la même année.</text></svg>`,
+
+"r-prov146": `<svg class="sch" viewBox="-6 -6 412 188"><title>L'empire romain en 146</title>
+<rect x="0" y="16" width="400" height="140" rx="6" fill="var(--blue)" opacity=".08"/>
+<text class="sm" x="196" y="30" text-anchor="middle" fill="var(--blue)">Méditerranée</text>
+<path d="M150 42 L162 46 L160 74 L144 84 L138 66 Z" fill="var(--red)" opacity=".3" stroke="var(--red)"/>
+<text class="t2" x="150" y="64" text-anchor="middle">Italie</text>
+<rect x="40" y="52" width="58" height="34" rx="4" fill="var(--gold)" opacity=".25" stroke="var(--gold)"/>
+<text x="69" y="66" text-anchor="middle">Hispanies</text><text class="sm" x="69" y="78" text-anchor="middle">197</text>
+<rect x="150" y="94" width="44" height="26" rx="4" fill="var(--gold)" opacity=".25" stroke="var(--gold)"/>
+<text class="sm" x="172" y="106" text-anchor="middle">Sicile</text><text class="sm" x="172" y="116" text-anchor="middle">241</text>
+<rect x="100" y="90" width="44" height="26" rx="4" fill="var(--gold)" opacity=".25" stroke="var(--gold)"/>
+<text class="sm" x="122" y="102" text-anchor="middle">Sard.-Cor.</text><text class="sm" x="122" y="112" text-anchor="middle">238</text>
+<rect x="112" y="128" width="70" height="26" rx="4" fill="var(--ok)" opacity=".25" stroke="var(--ok)"/>
+<text class="sm" x="147" y="140" text-anchor="middle">Afrique</text><text class="sm" x="147" y="150" text-anchor="middle">146</text>
+<rect x="232" y="44" width="72" height="26" rx="4" fill="var(--ok)" opacity=".25" stroke="var(--ok)"/>
+<text class="sm" x="268" y="56" text-anchor="middle">Macédoine</text><text class="sm" x="268" y="66" text-anchor="middle">146</text>
+<rect x="312" y="62" width="72" height="30" rx="4" fill="var(--card)" stroke="var(--line)" stroke-dasharray="4 3"/>
+<text class="sm" x="348" y="74" text-anchor="middle">Asie</text><text class="sm" x="348" y="86" text-anchor="middle">à venir, 129</text>
+<text class="sm" x="0" y="172">Trois quarts de l'Italie ne sont pas romains : ce sont des alliés.</text></svg>`,
+
+"r-ager": `<svg class="sch" viewBox="-6 -8 412 173"><title>La loi agraire de 133</title>
+<text class="t2" x="0" y="12">Terre occupée par un possesseur</text>
+<rect x="0" y="20" width="400" height="28" fill="var(--muted)" opacity=".18"/><rect x="0" y="20" width="400" height="28" fill="none" stroke="var(--line)"/>
+<line x1="150" y1="14" x2="150" y2="54" stroke="var(--red)" stroke-width="1.5"/>
+<text class="sm" x="75" y="38" text-anchor="middle">500 jugères gardés</text>
+<text class="sm" x="275" y="38" text-anchor="middle">excédent repris par l'État</text>
+<text class="t2" x="0" y="76">Après la loi Sempronia</text>
+<rect x="0" y="84" width="150" height="28" fill="var(--blue)" opacity=".25"/><rect x="0" y="84" width="150" height="28" fill="none" stroke="var(--blue)"/>
+<text class="sm" x="75" y="102" text-anchor="middle">garanti, sans redevance</text>
+<g fill="var(--ok)" opacity=".35"><rect x="156" y="84" width="34" height="28"/><rect x="196" y="84" width="34" height="28"/><rect x="236" y="84" width="34" height="28"/><rect x="276" y="84" width="34" height="28"/><rect x="316" y="84" width="34" height="28"/><rect x="356" y="84" width="34" height="28"/></g>
+<text class="sm" x="273" y="102" text-anchor="middle" fill="var(--ink)">lots inaliénables aux pauvres</text>
+<text class="sm" x="0" y="130">+ 250 jugères par fils, plafond probable de 1 000.</text>
+<text class="sm" x="0" y="143">1 jugère ≈ 0,25 ha, donc 500 jugères ≈ 125 hectares.</text>
+<text class="sm" x="0" y="156">Possession n'est pas propriété : l'État peut reprendre.</text></svg>`,
+
+"r-gracques": `<svg class="sch" viewBox="-6 -6 412 148"><title>Les Gracques, 133-111</title>
+<line x1="14" y1="58" x2="386" y2="58" stroke="var(--line)" stroke-width="1.5"/>
+<circle cx="24" cy="58" r="6" fill="var(--red)"/><circle cx="110" cy="58" r="5" fill="var(--muted)"/><circle cx="180" cy="58" r="5" fill="var(--muted)"/><circle cx="262" cy="58" r="6" fill="var(--blue)"/><circle cx="322" cy="58" r="6" fill="var(--red)"/><circle cx="378" cy="58" r="5" fill="var(--gold)"/>
+<text class="t2" x="24" y="44" text-anchor="middle">133</text><text class="t2" x="110" y="44" text-anchor="middle">129</text><text class="t2" x="180" y="44" text-anchor="middle">125</text><text class="t2" x="262" y="44" text-anchor="middle">123-122</text><text class="t2" x="322" y="44" text-anchor="middle">121</text><text class="t2" x="378" y="44" text-anchor="middle">111</text>
+<text class="sm" x="24" y="78" text-anchor="middle">Tiberius</text><text class="sm" x="24" y="90" text-anchor="middle">tribun,</text><text class="sm" x="24" y="102" text-anchor="middle">puis tué</text>
+<text class="sm" x="110" y="78" text-anchor="middle">commission</text><text class="sm" x="110" y="90" text-anchor="middle">paralysée</text>
+<text class="sm" x="180" y="78" text-anchor="middle">Frégelles</text><text class="sm" x="180" y="90" text-anchor="middle">rasée</text>
+<text class="sm" x="262" y="78" text-anchor="middle">Caius tribun</text><text class="sm" x="262" y="90" text-anchor="middle">blé, jurys,</text><text class="sm" x="262" y="102" text-anchor="middle">Junonia</text>
+<text class="sm" x="322" y="78" text-anchor="middle">sénatus-consulte</text><text class="sm" x="322" y="90" text-anchor="middle">ultime, Caius</text><text class="sm" x="322" y="102" text-anchor="middle">meurt</text>
+<text class="sm" x="378" y="78" text-anchor="middle">loi</text><text class="sm" x="378" y="90" text-anchor="middle">agraire</text>
+<text class="sm" x="14" y="22">Deux frères, dix ans d'écart, la même fin.</text>
+<text class="sm" x="14" y="130">Bilan : la violence entre en politique et n'en sortira plus.</text></svg>`,
+
+"r-polybe": `<svg class="sch" viewBox="-6 -6 412 189"><title>La constitution mixte de Polybe</title>
+<polygon points="200,22 356,146 44,146" fill="var(--blue)" opacity=".07" stroke="var(--line)"/>
+<rect x="142" y="10" width="116" height="34" rx="5" fill="var(--red)" opacity=".2"/><rect x="142" y="10" width="116" height="34" rx="5" fill="none" stroke="var(--red)"/>
+<text class="t2" x="200" y="25" text-anchor="middle">Les consuls</text><text class="sm" x="200" y="38" text-anchor="middle">élément monarchique</text>
+<rect x="0" y="126" width="120" height="34" rx="5" fill="var(--gold)" opacity=".22"/><rect x="0" y="126" width="120" height="34" rx="5" fill="none" stroke="var(--gold)"/>
+<text class="t2" x="60" y="141" text-anchor="middle">Le Sénat</text><text class="sm" x="60" y="154" text-anchor="middle">aristocratique</text>
+<rect x="280" y="126" width="120" height="34" rx="5" fill="var(--ok)" opacity=".22"/><rect x="280" y="126" width="120" height="34" rx="5" fill="none" stroke="var(--ok)"/>
+<text class="t2" x="340" y="141" text-anchor="middle">Le peuple</text><text class="sm" x="340" y="154" text-anchor="middle">démocratique</text>
+<text class="sm" x="200" y="82" text-anchor="middle">Chacun freine</text><text class="sm" x="200" y="95" text-anchor="middle">les deux autres</text>
+<text class="sm" x="0" y="174">Polybe, livre VI : comment Rome a conquis le monde en 53 ans.</text></svg>`,
+
+"r-marius": `<svg class="sch" viewBox="-6 -6 412 140"><title>La carrière de Marius</title>
+<line x1="16" y1="50" x2="384" y2="50" stroke="var(--line)" stroke-width="1.5"/>
+<circle cx="26" cy="50" r="5" fill="var(--muted)"/><circle cx="110" cy="50" r="6" fill="var(--red)"/><circle cx="180" cy="50" r="5" fill="var(--blue)"/><circle cx="268" cy="50" r="6" fill="var(--red)"/><circle cx="360" cy="50" r="5" fill="var(--gold)"/>
+<text class="t2" x="26" y="36" text-anchor="middle">115</text><text class="t2" x="110" y="36" text-anchor="middle">107</text><text class="t2" x="180" y="36" text-anchor="middle">105</text><text class="t2" x="268" y="36" text-anchor="middle">104-100</text><text class="t2" x="360" y="36" text-anchor="middle">100</text>
+<text class="sm" x="26" y="70" text-anchor="middle">préteur</text>
+<text class="sm" x="110" y="70" text-anchor="middle">1er consulat</text><text class="sm" x="110" y="82" text-anchor="middle">capite censi</text>
+<text class="sm" x="180" y="70" text-anchor="middle">Arausio</text><text class="sm" x="180" y="82" text-anchor="middle">Jugurtha livré</text>
+<text class="sm" x="268" y="70" text-anchor="middle">consul chaque année</text><text class="sm" x="268" y="82" text-anchor="middle">Aix 102, Verceil 101</text>
+<text class="sm" x="360" y="70" text-anchor="middle">Saturninus</text><text class="sm" x="360" y="82" text-anchor="middle">tué</text>
+<text class="sm" x="16" y="106">Marius lie un général, ses soldats et une loi agraire.</text>
+<text class="sm" x="16" y="120">La « réforme marienne » est une construction moderne (F. Cadiou, 2018).</text></svg>`,
+
+"r-italia": `<svg class="sch" viewBox="-6 -6 412 190"><title>La guerre des alliés, 91-89</title>
+<path d="M112 12 L138 22 L150 70 L182 118 L206 160 L176 168 L146 124 L118 76 L100 34 Z" fill="var(--ok)" opacity=".18" stroke="var(--ok)"/>
+<text class="sm" x="126" y="44" text-anchor="middle" fill="var(--ok)">fidèles</text>
+<circle cx="166" cy="92" r="7" fill="var(--red)"/><text class="t2" x="178" y="90">Corfinium</text><text class="sm" x="178" y="102">rebaptisée Italia</text>
+<circle cx="150" cy="62" r="5" fill="var(--gold)"/><text class="sm" x="160" y="60">Asculum, le massacre</text>
+<circle cx="140" cy="78" r="4" fill="var(--blue)"/><text class="sm" x="106" y="78" text-anchor="end">Rome</text>
+<rect x="240" y="116" width="158" height="54" rx="5" fill="var(--card)" stroke="var(--line)"/>
+<text class="t2" x="250" y="132">La confédération</text><text class="sm" x="250" y="145">sénat de 500 membres</text><text class="sm" x="250" y="157">2 consuls, 12 préteurs</text><text class="sm" x="250" y="167">monnaie au taureau italien</text>
+<text class="sm" x="240" y="24">Loi Iulia, 90 : aux fidèles</text>
+<text class="sm" x="240" y="38">Loi Plautia Papiria, 89 :</text>
+<text class="sm" x="240" y="50">à qui s'inscrit en 60 jours</text>
+<text class="sm" x="240" y="64">Loi Pompeia, 89 : droit latin</text>
+<text class="sm" x="240" y="76">au nord du Pô</text>
+<text class="sm" x="240" y="94" fill="var(--red)">Rome gagne en cédant.</text></svg>`
+
+};
+
+const SCH_GEO = {
+
+"g-zones": `<svg class="sch" viewBox="-38 -6 444 183"><title>Les zones thermiques</title>
+<rect x="60" y="14" width="280" height="22" fill="var(--blue)" opacity=".42"/>
+<rect x="60" y="36" width="280" height="30" fill="var(--blue)" opacity=".18"/>
+<rect x="60" y="66" width="280" height="36" fill="var(--red)" opacity=".22"/>
+<rect x="60" y="102" width="280" height="30" fill="var(--blue)" opacity=".18"/>
+<rect x="60" y="132" width="280" height="22" fill="var(--blue)" opacity=".42"/>
+<rect x="60" y="14" width="280" height="140" fill="none" stroke="var(--line)"/>
+<line x1="60" y1="84" x2="340" y2="84" stroke="var(--red)" stroke-dasharray="4 3"/>
+<text class="sm" x="56" y="28" text-anchor="end">pôle Nord −16 °C</text>
+<text class="sm" x="56" y="54" text-anchor="end">66° 34′ N</text>
+<text class="sm" x="56" y="88" text-anchor="end">équateur +27 °C</text>
+<text class="sm" x="56" y="120" text-anchor="end">66° 34′ S</text>
+<text class="sm" x="56" y="148" text-anchor="end">pôle Sud −52 °C</text>
+<text class="t2" x="200" y="29" text-anchor="middle">zone froide</text>
+<text class="t2" x="200" y="55" text-anchor="middle">zone tempérée</text>
+<text class="t2" x="200" y="88" text-anchor="middle">zone chaude</text>
+<text class="t2" x="200" y="121" text-anchor="middle">zone tempérée</text>
+<text class="t2" x="200" y="147" text-anchor="middle">zone froide</text>
+<text class="sm" x="0" y="168">Le pôle Sud est bien plus froid : la latitude n'explique pas tout.</text></svg>`,
+
+"g-coord": `<svg class="sch" viewBox="-3 -3 406 257"><title>Latitude, longitude, altitude</title>
+<circle cx="96" cy="86" r="70" fill="var(--blue)" opacity=".1"/><circle cx="96" cy="86" r="70" fill="none" stroke="var(--line)"/>
+<ellipse cx="96" cy="86" rx="70" ry="14" fill="none" stroke="var(--red)" stroke-width="1.4"/>
+<ellipse cx="96" cy="86" rx="70" ry="42" fill="none" stroke="var(--line)" stroke-dasharray="3 3"/>
+<ellipse cx="96" cy="86" rx="70" ry="60" fill="none" stroke="var(--line)" stroke-dasharray="3 3"/>
+<ellipse cx="96" cy="86" rx="20" ry="70" fill="none" stroke="var(--blue)" stroke-dasharray="3 3"/>
+<ellipse cx="96" cy="86" rx="48" ry="70" fill="none" stroke="var(--line)" stroke-dasharray="3 3"/>
+<line x1="96" y1="10" x2="96" y2="162" stroke="var(--muted)" stroke-width="1"/>
+<circle cx="96" cy="16" r="3" fill="var(--ink)"/><circle cx="96" cy="156" r="3" fill="var(--ink)"/>
+<line x1="150" y1="44" x2="196" y2="40" stroke="var(--muted)" stroke-dasharray="2 2"/>
+<text class="t2" x="202" y="44">parallèles</text>
+<line x1="168" y1="86" x2="196" y2="86" stroke="var(--red)" stroke-dasharray="2 2"/>
+<text class="t2" x="202" y="90" fill="var(--red)">équateur, 0°</text>
+<line x1="118" y1="140" x2="196" y2="132" stroke="var(--muted)" stroke-dasharray="2 2"/>
+<text class="t2" x="202" y="136" fill="var(--blue)">méridiens</text>
+<rect x="0" y="172" width="400" height="58" rx="5" fill="var(--card)" stroke="var(--line)"/>
+<text x="12" y="192">Latitude : 0 à 90° Nord ou Sud</text>
+<text x="12" y="210">Longitude : 0 à 180° Est ou Ouest</text>
+<text x="12" y="224">Méridien origine : Greenwich, adopté en 1884</text>
+<text x="0" y="248">L'altitude est la troisième : le pôle Sud est à près de 2 800 m.</text></svg>`,
+
+"g-albedo": `<svg class="sch" viewBox="-6 -8 412 183"><title>L'albédo des surfaces</title>
+<text class="t2" x="0" y="12">Part du rayonnement renvoyée</text>
+<rect x="132" y="20" width="248" height="14" rx="3" fill="var(--muted)" opacity=".12"/><rect x="132" y="20" width="192" height="14" rx="3" fill="var(--blue)" opacity=".6"/>
+<text class="sm" x="128" y="31" text-anchor="end">Pack dense d'hiver</text><text class="sm" x="332" y="31">75-80 %</text>
+<rect x="132" y="40" width="248" height="14" rx="3" fill="var(--muted)" opacity=".12"/><rect x="132" y="40" width="149" height="14" rx="3" fill="var(--blue)" opacity=".5"/>
+<text class="sm" x="128" y="51" text-anchor="end">Neige ancienne</text><text class="sm" x="289" y="51">50-70 %</text>
+<rect x="132" y="60" width="248" height="14" rx="3" fill="var(--muted)" opacity=".12"/><rect x="132" y="60" width="136" height="14" rx="3" fill="var(--blue)" opacity=".42"/>
+<text class="sm" x="128" y="71" text-anchor="end">Glace de glacier</text><text class="sm" x="276" y="71">40-70 %</text>
+<rect x="132" y="80" width="248" height="14" rx="3" fill="var(--muted)" opacity=".12"/><rect x="132" y="80" width="112" height="14" rx="3" fill="var(--gold)" opacity=".45"/>
+<text class="sm" x="128" y="91" text-anchor="end">Banquise lâche d'été</text><text class="sm" x="252" y="91">30-60 %</text>
+<rect x="132" y="100" width="248" height="14" rx="3" fill="var(--muted)" opacity=".12"/><rect x="132" y="100" width="56" height="14" rx="3" fill="var(--gold)" opacity=".4"/>
+<text class="sm" x="128" y="111" text-anchor="end">Surfaces rocheuses</text><text class="sm" x="196" y="111">15-30 %</text>
+<rect x="132" y="120" width="248" height="14" rx="3" fill="var(--muted)" opacity=".12"/><rect x="132" y="120" width="31" height="14" rx="3" fill="var(--red)" opacity=".45"/>
+<text class="sm" x="128" y="131" text-anchor="end">Mer libre</text><text class="sm" x="171" y="131">5-15 %</text>
+<text class="sm" x="0" y="154">La glace fond, la mer sombre absorbe plus, la fonte s'accélère :</text>
+<text class="sm" x="0" y="166">l'albédo n'est pas une cause du froid, c'est une rétroaction.</text></svg>`,
+
+"g-gradient": `<svg class="sch" viewBox="-22 -6 438 183"><title>Le gradient thermique</title>
+<polygon points="60,150 200,20 340,150" fill="var(--muted)" opacity=".14" stroke="var(--line)"/>
+<polygon points="168,50 200,20 232,50" fill="var(--blue)" opacity=".35"/>
+<line x1="60" y1="150" x2="340" y2="150" stroke="var(--line)"/>
+<line x1="46" y1="150" x2="354" y2="150" stroke="var(--muted)" stroke-dasharray="2 3"/>
+<line x1="90" y1="118" x2="310" y2="118" stroke="var(--muted)" stroke-dasharray="2 3"/>
+<line x1="122" y1="86" x2="278" y2="86" stroke="var(--muted)" stroke-dasharray="2 3"/>
+<line x1="154" y1="54" x2="246" y2="54" stroke="var(--muted)" stroke-dasharray="2 3"/>
+<text class="sm" x="42" y="154" text-anchor="end">0 m · 20 °C</text>
+<text class="sm" x="86" y="122" text-anchor="end">1 000 m · 14 °C</text>
+<text class="sm" x="118" y="90" text-anchor="end">2 000 m · 8 °C</text>
+<text class="sm" x="150" y="58" text-anchor="end">3 000 m · 2 °C</text>
+<text class="t2" x="358" y="86" fill="var(--blue)">−0,6 °C</text><text class="sm" x="358" y="99">par 100 m</text>
+<text class="sm" x="0" y="168">C'est le facteur qui produit du froid jusque sous l'équateur.</text></svg>`,
+
+"g-adret": `<svg class="sch" viewBox="-6 -6 412 177"><title>Adret et ubac</title>
+<circle cx="66" cy="30" r="15" fill="var(--gold)" opacity=".7"/>
+<g stroke="var(--gold)" stroke-width="1.2" opacity=".7"><line x1="88" y1="40" x2="150" y2="84"/><line x1="88" y1="52" x2="152" y2="98"/><line x1="88" y1="64" x2="154" y2="112"/></g>
+<polygon points="100,140 200,50 300,140" fill="var(--muted)" opacity=".18" stroke="var(--line)"/>
+<polygon points="100,140 200,50 200,140" fill="var(--gold)" opacity=".3"/>
+<polygon points="200,50 300,140 200,140" fill="var(--blue)" opacity=".25"/>
+<text class="t2" x="146" y="112" text-anchor="middle">adret</text>
+<text class="sm" x="146" y="126" text-anchor="middle">au soleil</text>
+<text class="t2" x="256" y="112" text-anchor="middle">ubac</text>
+<text class="sm" x="256" y="126" text-anchor="middle">à l'ombre</text>
+<text class="sm" x="0" y="150">Soulane et ombrée dans les Pyrénées. Ce facteur joue à l'échelle</text>
+<text class="sm" x="0" y="162">d'une vallée, pas d'une zone climatique.</text></svg>`,
+
+"g-poles": `<svg class="sch" viewBox="-6 -6 412 202"><title>Arctique et Antarctique</title>
+<text class="t2" x="98" y="14" text-anchor="middle">Arctique</text>
+<circle cx="98" cy="84" r="62" fill="var(--muted)" opacity=".22"/><circle cx="98" cy="84" r="62" fill="none" stroke="var(--line)"/>
+<circle cx="98" cy="84" r="40" fill="var(--blue)" opacity=".4"/><circle cx="98" cy="84" r="40" fill="none" stroke="var(--blue)"/>
+<text class="sm" x="98" y="80" text-anchor="middle" fill="var(--ink)">un océan</text>
+<text class="sm" x="98" y="93" text-anchor="middle" fill="var(--ink)">banquise</text>
+<text class="sm" x="98" y="34" text-anchor="middle">des continents autour</text>
+<text class="t2" x="302" y="14" text-anchor="middle">Antarctique</text>
+<circle cx="302" cy="84" r="62" fill="var(--blue)" opacity=".3"/><circle cx="302" cy="84" r="62" fill="none" stroke="var(--blue)"/>
+<circle cx="302" cy="84" r="40" fill="var(--muted)" opacity=".3"/><circle cx="302" cy="84" r="40" fill="none" stroke="var(--line)"/>
+<text class="sm" x="302" y="80" text-anchor="middle" fill="var(--ink)">un continent</text>
+<text class="sm" x="302" y="93" text-anchor="middle" fill="var(--ink)">sous inlandsis</text>
+<text class="sm" x="302" y="34" text-anchor="middle">l'océan Austral autour</text>
+<line x1="200" y1="20" x2="200" y2="150" stroke="var(--line)" stroke-dasharray="4 4"/>
+<text class="sm" x="98" y="166" text-anchor="middle">≈ 4 millions d'habitants</text>
+<text class="sm" x="98" y="179" text-anchor="middle">Conseil de l'Arctique, 1996</text>
+<text class="sm" x="302" y="166" text-anchor="middle">aucune population permanente</text>
+<text class="sm" x="302" y="179" text-anchor="middle">traité de 1959, au sud du 60° S</text></svg>`,
+
+"g-proj": `<svg class="sch" viewBox="-6 -6 413 184"><title>Trois projections</title>
+<rect x="6" y="20" width="114" height="76" fill="var(--blue)" opacity=".08" stroke="var(--line)"/>
+<rect x="18" y="26" width="34" height="26" fill="var(--red)" opacity=".4"/>
+<ellipse cx="72" cy="72" rx="20" ry="16" fill="var(--ok)" opacity=".4"/>
+<text class="t2" x="63" y="14" text-anchor="middle">Mercator</text>
+<text class="sm" x="63" y="108" text-anchor="middle">conforme</text><text class="sm" x="63" y="120" text-anchor="middle">angles justes,</text><text class="sm" x="63" y="132" text-anchor="middle">pôles démesurés</text>
+<rect x="143" y="20" width="114" height="76" fill="var(--blue)" opacity=".08" stroke="var(--line)"/>
+<rect x="152" y="28" width="14" height="14" fill="var(--red)" opacity=".4"/>
+<ellipse cx="204" cy="66" rx="14" ry="26" fill="var(--ok)" opacity=".4"/>
+<text class="t2" x="200" y="14" text-anchor="middle">Peters</text>
+<text class="sm" x="200" y="108" text-anchor="middle">équivalente</text><text class="sm" x="200" y="120" text-anchor="middle">surfaces justes,</text><text class="sm" x="200" y="132" text-anchor="middle">formes étirées</text>
+<circle cx="337" cy="58" r="38" fill="var(--blue)" opacity=".08" stroke="var(--line)"/>
+<circle cx="337" cy="58" r="15" fill="var(--muted)" opacity=".3"/>
+<line x1="337" y1="20" x2="337" y2="96" stroke="var(--line)" stroke-dasharray="2 2"/><line x1="299" y1="58" x2="375" y2="58" stroke="var(--line)" stroke-dasharray="2 2"/>
+<text class="t2" x="337" y="14" text-anchor="middle">Azimutale polaire</text>
+<text class="sm" x="337" y="108" text-anchor="middle">un pôle d'un seul tenant :</text><text class="sm" x="337" y="120" text-anchor="middle">la bonne carte</text><text class="sm" x="337" y="132" text-anchor="middle">pour l'Arctique</text>
+<text class="sm" x="0" y="154">Une sphère n'est pas développable : toute carte plane déforme</text>
+<text class="sm" x="0" y="166">les angles, les surfaces, ou les deux. Le choix dépend de l'usage.</text></svg>`,
+
+"g-fuller": `<svg class="sch" viewBox="-6 -6 412 167"><title>La projection de Fuller</title>
+<g fill="var(--ok)" fill-opacity=".22" stroke="var(--line)">
+<polygon points="40,86 76,24 112,86"/><polygon points="112,86 76,24 148,24"/><polygon points="112,86 148,24 184,86"/><polygon points="184,86 148,24 220,24"/><polygon points="184,86 220,24 256,86"/><polygon points="256,86 220,24 292,24"/><polygon points="256,86 292,24 328,86"/>
+<polygon points="76,86 112,148 148,86"/><polygon points="148,86 184,148 220,86"/><polygon points="220,86 256,148 292,86"/></g>
+<circle cx="150" cy="58" r="13" fill="var(--blue)" opacity=".5"/><text class="sm" x="150" y="61" text-anchor="middle" fill="var(--ink)">N</text>
+<text class="sm" x="0" y="16">Le globe déplié en vingt triangles (icosaèdre)</text>
+<text class="sm" x="0" y="140">Continents presque continus, océans découpés,</text>
+<text class="sm" x="0" y="152">et aucun haut ni bas : d'où l'exercice sur les points cardinaux.</text></svg>`,
+
+"g-echelle": `<svg class="sch" viewBox="-6 -6 412 183"><title>Grande et petite échelle</title>
+<rect x="6" y="18" width="180" height="120" rx="4" fill="var(--blue)" opacity=".08" stroke="var(--line)"/>
+<text class="t2" x="96" y="34" text-anchor="middle">Russie entière</text>
+<text class="sm" x="96" y="48" text-anchor="middle">petite échelle</text>
+<rect x="60" y="58" width="94" height="62" rx="3" fill="var(--gold)" opacity=".18" stroke="var(--gold)"/>
+<text class="sm" x="107" y="76" text-anchor="middle">Sibérie orientale</text>
+<rect x="96" y="86" width="40" height="26" rx="2" fill="var(--red)" opacity=".3" stroke="var(--red)"/>
+<text class="sm" x="116" y="102" text-anchor="middle">Kolyma</text>
+<text class="sm" x="96" y="132" text-anchor="middle">grande échelle au centre</text>
+<rect x="200" y="18" width="200" height="120" rx="4" fill="var(--card)" stroke="var(--line)"/>
+<text class="t2" x="212" y="36">Échelle cartographique</text>
+<text class="sm" x="212" y="52">un rapport de réduction</text>
+<text class="sm" x="212" y="66">1/25 000 → grande échelle</text>
+<text class="sm" x="212" y="78">1/50 000 000 → petite échelle</text>
+<text class="t2" x="212" y="98">Échelle géographique</text>
+<text class="sm" x="212" y="114">un niveau d'analyse :</text>
+<text class="sm" x="212" y="126">local, régional, mondial</text>
+<text class="sm" x="0" y="156">Les deux vocabulaires vont en sens contraire : une grande échelle</text>
+<text class="sm" x="0" y="168">cartographique sert l'échelle géographique locale.</text></svg>`,
+
+"g-cryo": `<svg class="sch" viewBox="-6 -8 412 164"><title>La cryosphère</title>
+<text class="t2" x="0" y="12">Toutes les surfaces où l'eau est solide</text>
+<rect x="0" y="22" width="76" height="58" rx="5" fill="var(--blue)" opacity=".3" stroke="var(--blue)"/>
+<text class="sm" x="38" y="44" text-anchor="middle" fill="var(--ink)">Inlandsis</text><text class="sm" x="38" y="58" text-anchor="middle">Groenland</text><text class="sm" x="38" y="70" text-anchor="middle">Antarctique</text>
+<rect x="82" y="22" width="76" height="58" rx="5" fill="var(--blue)" opacity=".22" stroke="var(--blue)"/>
+<text class="sm" x="120" y="44" text-anchor="middle" fill="var(--ink)">Banquise</text><text class="sm" x="120" y="58" text-anchor="middle">eau de mer</text><text class="sm" x="120" y="70" text-anchor="middle">gelée</text>
+<rect x="164" y="22" width="76" height="58" rx="5" fill="var(--blue)" opacity=".16" stroke="var(--blue)"/>
+<text class="sm" x="202" y="44" text-anchor="middle" fill="var(--ink)">Glaciers</text><text class="sm" x="202" y="58" text-anchor="middle">et calottes</text>
+<rect x="246" y="22" width="76" height="58" rx="5" fill="var(--muted)" opacity=".2" stroke="var(--line)"/>
+<text class="sm" x="284" y="44" text-anchor="middle" fill="var(--ink)">Neige</text><text class="sm" x="284" y="58" text-anchor="middle">saisonnière</text>
+<rect x="328" y="22" width="72" height="58" rx="5" fill="var(--gold)" opacity=".2" stroke="var(--gold)"/>
+<text class="sm" x="364" y="44" text-anchor="middle" fill="var(--ink)">Pergélisol</text><text class="sm" x="364" y="58" text-anchor="middle">sol gelé en</text><text class="sm" x="364" y="70" text-anchor="middle">permanence</text>
+<text class="sm" x="0" y="104">Piège classique : la banquise flotte, sa fonte n'élève pas le niveau</text>
+<text class="sm" x="0" y="116">de la mer. L'inlandsis repose sur la terre ferme : sa fonte, si.</text>
+<text class="sm" x="0" y="136">C'est la légende de la carte en projection de Fuller du TD 4.</text></svg>`,
+
+"g-nuuk": `<svg class="sch" viewBox="-6 -6 412 181"><title>Le complexe scalaire de Nuuk</title>
+<circle cx="70" cy="70" r="26" fill="var(--ok)" opacity=".25" stroke="var(--ok)"/>
+<text class="sm" x="70" y="68" text-anchor="middle" fill="var(--ink)">village</text><text class="sm" x="70" y="80" text-anchor="middle">300 hab.</text>
+<circle cx="200" cy="70" r="46" fill="var(--red)" opacity=".2" stroke="var(--red)"/>
+<text class="t2" x="200" y="66" text-anchor="middle">Nuuk</text><text class="sm" x="200" y="80" text-anchor="middle">19 900 hab.</text>
+<circle cx="330" cy="70" r="62" fill="var(--blue)" opacity=".12" stroke="var(--blue)"/>
+<text class="sm" x="330" y="68" text-anchor="middle" fill="var(--ink)">le monde</text><text class="sm" x="330" y="80" text-anchor="middle">métropoles</text>
+<path d="M100 56 L150 56" stroke="var(--ok)" stroke-width="1.4"/><polygon points="156,56 148,52 148,60" fill="var(--ok)"/>
+<text class="sm" x="128" y="46" text-anchor="middle" fill="var(--ok)">gigantesque</text>
+<path d="M300 90 L252 90" stroke="var(--blue)" stroke-width="1.4"/><polygon points="246,90 254,86 254,94" fill="var(--blue)"/>
+<text class="sm" x="276" y="106" text-anchor="middle" fill="var(--blue)">minuscule</text>
+<text class="sm" x="0" y="140">Le nouveau citadin croit rejoindre la mondialisation et découvre</text>
+<text class="sm" x="0" y="152">qu'il n'est qu'à l'une de ses bordures.</text>
+<text class="sm" x="0" y="166">Chef-lieu de Sermersooq, 531 900 km², plus vaste que l'Espagne.</text></svg>`,
+
+"g-svalbard": `<svg class="sch" viewBox="-6 -6 446 178"><title>Le Svalbard</title>
+<rect x="0" y="14" width="400" height="118" rx="6" fill="var(--blue)" opacity=".1"/>
+<path d="M96 30 L150 26 L176 60 L162 104 L118 120 L86 96 L78 56 Z" fill="var(--muted)" opacity=".28" stroke="var(--line)"/>
+<path d="M196 36 L240 32 L256 68 L228 94 L196 74 Z" fill="var(--muted)" opacity=".22" stroke="var(--line)"/>
+<text class="sm" x="128" y="46" text-anchor="middle" fill="var(--ink)">Spitzberg</text>
+<circle cx="136" cy="84" r="5" fill="var(--red)"/><text class="sm" x="146" y="88">Longyearbyen</text>
+<circle cx="100" cy="72" r="5" fill="var(--gold)"/><text class="sm" x="94" y="70" text-anchor="end">Barentsburg</text>
+<circle cx="128" cy="56" r="5" fill="var(--muted)"/><text class="sm" x="136" y="54">Pyramiden</text>
+<text class="sm" x="290" y="34">Traité du 9 février 1920</text>
+<text class="sm" x="290" y="48">souveraineté norvégienne</text>
+<text class="sm" x="290" y="62">accès égal aux ressources</text>
+<text class="sm" x="290" y="76">zone démilitarisée</text>
+<text class="sm" x="290" y="96" fill="var(--gold)">Barentsburg : habitée</text>
+<text class="sm" x="290" y="110" fill="var(--muted)">Pyramiden : fermée en 1998</text>
+<text class="sm" x="0" y="150">C'est cet accès égal qui explique deux villes russes exploitées par</text>
+<text class="sm" x="0" y="162">Arktikugol dans un archipel norvégien.</text></svg>`
+
+};
+
+const SCH_HC = {
+
+"h-regimes": `<svg class="sch" viewBox="-3 -4 406 221"><title>Les régimes français de 1815 à 1919</title>
+<text class="t2" x="0" y="13">Un siècle, cinq régimes</text>
+<rect x="0" y="22" width="9" height="20" rx="2" fill="var(--gold)" opacity=".55"/>
+<text class="t2" x="18" y="37">1815-1830</text><text x="112" y="37">Restauration</text>
+<rect x="0" y="48" width="9" height="20" rx="2" fill="var(--gold)" opacity=".35"/>
+<text class="t2" x="18" y="63">1830-1848</text><text x="112" y="63">Monarchie de Juillet</text>
+<rect x="0" y="74" width="9" height="20" rx="2" fill="var(--red)" opacity=".5"/>
+<text class="t2" x="18" y="89">1848-1852</text><text x="112" y="89">Deuxième République</text>
+<rect x="0" y="100" width="9" height="20" rx="2" fill="var(--blue)" opacity=".5"/>
+<text class="t2" x="18" y="115">1852-1870</text><text x="112" y="115">Second Empire</text>
+<rect x="0" y="126" width="9" height="20" rx="2" fill="var(--ok)" opacity=".5"/>
+<text class="t2" x="18" y="141">1870-1940</text><text x="112" y="141">Troisième République</text>
+<line x1="0" y1="158" x2="400" y2="158" stroke="var(--line)"/>
+<text x="0" y="176">1830 · Charles X part, Louis-Philippe arrive</text>
+<text x="0" y="192">1848 · la révolution politique devient sociale</text>
+<text x="0" y="208">1870 · Sedan fait la République, proclamée le 4 septembre</text></svg>`,
+
+"h-vienne": `<svg class="sch" viewBox="-3 -3 406 215"><title>L'Europe du Congrès de Vienne</title>
+<rect x="0" y="16" width="400" height="120" rx="6" fill="var(--blue)" opacity=".06" stroke="var(--line)"/>
+<rect x="14" y="52" width="110" height="50" rx="4" fill="var(--red)" opacity=".22" stroke="var(--red)"/>
+<text class="t2" x="69" y="74" text-anchor="middle">France</text>
+<text class="sm" x="69" y="90" text-anchor="middle">frontières de 1792</text>
+<rect x="140" y="28" width="118" height="44" rx="4" fill="var(--gold)" opacity=".2" stroke="var(--gold)"/>
+<text class="t2" x="199" y="47" text-anchor="middle">Prusse</text><text class="sm" x="199" y="63" text-anchor="middle">Rhénanie</text>
+<rect x="268" y="28" width="118" height="44" rx="4" fill="var(--gold)" opacity=".2" stroke="var(--gold)"/>
+<text class="t2" x="327" y="47" text-anchor="middle">Russie</text><text class="sm" x="327" y="63" text-anchor="middle">Pologne</text>
+<rect x="140" y="80" width="118" height="44" rx="4" fill="var(--gold)" opacity=".2" stroke="var(--gold)"/>
+<text class="t2" x="199" y="99" text-anchor="middle">Autriche</text><text class="sm" x="199" y="115" text-anchor="middle">Italie du Nord</text>
+<rect x="268" y="80" width="118" height="44" rx="4" fill="var(--gold)" opacity=".2" stroke="var(--gold)"/>
+<text class="t2" x="327" y="99" text-anchor="middle">Royaume-Uni</text><text class="sm" x="327" y="115" text-anchor="middle">les mers</text>
+<text x="0" y="158">Un équilibre bâti contre la France et contre les peuples.</text>
+<text x="0" y="176">Acte final : 9 juin 1815, neuf jours avant Waterloo.</text>
+<text x="0" y="194">Talleyrand impose la France par le principe de légitimité,</text>
+<text x="0" y="206">appliqué de façon très sélective : ni Venise ni la Pologne.</text></svg>`,
+
+"h-cens": `<svg class="sch" viewBox="-6 -6 412 180"><title>Le suffrage censitaire</title>
+<polygon points="200,16 340,132 60,132" fill="var(--muted)" opacity=".12" stroke="var(--line)"/>
+<polygon points="200,16 226,38 174,38" fill="var(--red)" opacity=".45"/>
+<text class="sm" x="352" y="32" text-anchor="end" fill="var(--red)">éligibles</text>
+<line x1="226" y1="34" x2="356" y2="28" stroke="var(--muted)" stroke-dasharray="2 2"/>
+<polygon points="174,38 226,38 244,54 156,54" fill="var(--gold)" opacity=".4"/>
+<line x1="244" y1="50" x2="356" y2="50" stroke="var(--muted)" stroke-dasharray="2 2"/>
+<text class="sm" x="360" y="54" text-anchor="end" fill="var(--gold)">électeurs</text>
+<text class="sm" x="200" y="100" text-anchor="middle">le reste de la population</text>
+<text class="sm" x="200" y="118" text-anchor="middle">n'a aucun droit de vote</text>
+<text class="sm" x="0" y="150">Sous la Restauration, environ 90 000 électeurs ; la Monarchie</text>
+<text class="sm" x="0" y="162">de Juillet double le corps électoral, sans le démocratiser.</text></svg>`,
+
+"h-1848": `<svg class="sch" viewBox="-6 -6 412 166"><title>1848, trois moments</title>
+<rect x="0" y="18" width="124" height="70" rx="5" fill="var(--ok)" opacity=".22" stroke="var(--ok)"/>
+<text class="t2" x="62" y="36" text-anchor="middle">Février</text>
+<text class="sm" x="62" y="52" text-anchor="middle">la République</text><text class="sm" x="62" y="64" text-anchor="middle">suffrage universel</text><text class="sm" x="62" y="78" text-anchor="middle">masculin, ateliers</text>
+<rect x="138" y="18" width="124" height="70" rx="5" fill="var(--red)" opacity=".25" stroke="var(--red)"/>
+<text class="t2" x="200" y="36" text-anchor="middle">Juin</text>
+<text class="sm" x="200" y="52" text-anchor="middle">fermeture des ateliers</text><text class="sm" x="200" y="64" text-anchor="middle">insurrection ouvrière</text><text class="sm" x="200" y="78" text-anchor="middle">écrasée par Cavaignac</text>
+<rect x="276" y="18" width="124" height="70" rx="5" fill="var(--blue)" opacity=".22" stroke="var(--blue)"/>
+<text class="t2" x="338" y="36" text-anchor="middle">Décembre</text>
+<text class="sm" x="338" y="52" text-anchor="middle">Louis-Napoléon élu</text><text class="sm" x="338" y="64" text-anchor="middle">président avec</text><text class="sm" x="338" y="78" text-anchor="middle">près de 75 % des voix</text>
+<polygon points="130,48 124,44 124,52" fill="var(--muted)"/><polygon points="270,48 264,44 264,52" fill="var(--muted)"/>
+<text class="sm" x="0" y="116">Le suffrage universel, conquête de février, porte en décembre</text>
+<text class="sm" x="0" y="130">celui qui supprimera la République le 2 décembre 1851.</text>
+<text class="sm" x="0" y="150">C'est le paradoxe central du chapitre.</text></svg>`,
+
+"h-1870": `<svg class="sch" viewBox="-12 -6 421 153"><title>La guerre de 1870-1871</title>
+<line x1="12" y1="52" x2="388" y2="52" stroke="var(--line)" stroke-width="1.5"/>
+<circle cx="22" cy="52" r="5" fill="var(--muted)"/><circle cx="96" cy="52" r="5" fill="var(--red)"/><circle cx="170" cy="52" r="7" fill="var(--red)"/><circle cx="244" cy="52" r="5" fill="var(--gold)"/><circle cx="310" cy="52" r="5" fill="var(--blue)"/><circle cx="378" cy="52" r="5" fill="var(--red)"/>
+<text class="t2" x="22" y="38" text-anchor="middle">19 juil.</text><text class="t2" x="96" y="38" text-anchor="middle">6 août</text><text class="t2" x="170" y="38" text-anchor="middle">1-2 sept.</text><text class="t2" x="244" y="38" text-anchor="middle">27 oct.</text><text class="t2" x="310" y="38" text-anchor="middle">28 janv.</text><text class="t2" x="378" y="38" text-anchor="middle">mai</text>
+<text class="sm" x="22" y="72" text-anchor="middle">déclaration</text><text class="sm" x="22" y="84" text-anchor="middle">de guerre</text>
+<text class="sm" x="96" y="72" text-anchor="middle">Frœschwiller</text><text class="sm" x="96" y="84" text-anchor="middle">et Spicheren</text>
+<text class="sm" x="170" y="72" text-anchor="middle">Sedan</text><text class="sm" x="170" y="84" text-anchor="middle">République</text><text class="sm" x="170" y="96" text-anchor="middle">le 4 septembre</text>
+<text class="sm" x="244" y="72" text-anchor="middle">Metz capitule</text><text class="sm" x="244" y="84" text-anchor="middle">170 000 hommes</text>
+<text class="sm" x="310" y="72" text-anchor="middle">armistice</text><text class="sm" x="310" y="84" text-anchor="middle">Paris affamé</text>
+<text class="sm" x="378" y="72" text-anchor="middle">Semaine</text><text class="sm" x="378" y="84" text-anchor="middle">sanglante</text>
+<text class="sm" x="12" y="18">Six semaines pour perdre l'Empire, six mois pour perdre l'Alsace-Lorraine.</text>
+<text class="sm" x="12" y="126">Traité de Francfort, 10 mai 1871 : Alsace, une partie de la Lorraine,</text>
+<text class="sm" x="12" y="138">et cinq milliards de francs d'indemnité.</text></svg>`,
+
+"h-1875": `<svg class="sch" viewBox="-6 -6 412 188"><title>Les institutions de 1875</title>
+<rect x="128" y="14" width="144" height="38" rx="5" fill="var(--red)" opacity=".2" stroke="var(--red)"/>
+<text class="t2" x="200" y="30" text-anchor="middle">Président</text><text class="sm" x="200" y="44" text-anchor="middle">7 ans, élu par les chambres</text>
+<rect x="0" y="94" width="176" height="44" rx="5" fill="var(--gold)" opacity=".22" stroke="var(--gold)"/>
+<text class="t2" x="88" y="112" text-anchor="middle">Sénat</text><text class="sm" x="88" y="126" text-anchor="middle">300 membres, suffrage indirect</text>
+<rect x="224" y="94" width="176" height="44" rx="5" fill="var(--ok)" opacity=".22" stroke="var(--ok)"/>
+<text class="t2" x="312" y="112" text-anchor="middle">Chambre des députés</text><text class="sm" x="312" y="126" text-anchor="middle">suffrage universel masculin</text>
+<line x1="160" y1="52" x2="96" y2="92" stroke="var(--muted)" stroke-width="1.2"/>
+<line x1="240" y1="52" x2="304" y2="92" stroke="var(--muted)" stroke-width="1.2"/>
+<text class="sm" x="200" y="74" text-anchor="middle">dissolution sur avis conforme du Sénat</text>
+<text class="sm" x="0" y="158">Trois lois : 24 février, 25 février, 16 juillet 1875.</text>
+<text class="sm" x="0" y="170">Le mot « République » n'y entre que par l'amendement Wallon, à une voix.</text></svg>`,
+
+"h-colonial": `<svg class="sch" viewBox="-19 -6 425 168"><title>L'empire colonial français</title>
+<line x1="14" y1="58" x2="386" y2="58" stroke="var(--line)" stroke-width="1.5"/>
+<circle cx="24" cy="58" r="5" fill="var(--gold)"/><circle cx="104" cy="58" r="5" fill="var(--blue)"/><circle cx="168" cy="58" r="6" fill="var(--red)"/><circle cx="252" cy="58" r="5" fill="var(--blue)"/><circle cx="330" cy="58" r="5" fill="var(--ok)"/>
+<text class="t2" x="24" y="44" text-anchor="middle">1830</text><text class="t2" x="104" y="44" text-anchor="middle">1881</text><text class="t2" x="168" y="44" text-anchor="middle">1885</text><text class="t2" x="252" y="44" text-anchor="middle">1895</text><text class="t2" x="330" y="44" text-anchor="middle">1912</text>
+<text class="sm" x="24" y="78" text-anchor="middle">Alger</text><text class="sm" x="24" y="90" text-anchor="middle">conquête</text><text class="sm" x="24" y="102" text-anchor="middle">jusqu'en 1847</text>
+<text class="sm" x="104" y="78" text-anchor="middle">Tunisie</text><text class="sm" x="104" y="90" text-anchor="middle">Bardo</text>
+<text class="sm" x="168" y="78" text-anchor="middle">Tonkin</text><text class="sm" x="168" y="90" text-anchor="middle">Lang Son fait</text><text class="sm" x="168" y="102" text-anchor="middle">tomber Ferry</text>
+<text class="sm" x="252" y="78" text-anchor="middle">Madagascar</text>
+<text class="sm" x="330" y="78" text-anchor="middle">Maroc</text><text class="sm" x="330" y="90" text-anchor="middle">protectorat</text>
+<text class="sm" x="14" y="22">Le débat de juillet 1885 : Ferry le 28, Clemenceau le 30.</text>
+<text class="sm" x="14" y="126">Ferry invoque le devoir des races supérieures et les débouchés ;</text>
+<text class="sm" x="14" y="138">Clemenceau récuse la hiérarchie des races et compte les morts.</text>
+<text class="sm" x="14" y="152">Les deux sont républicains : la ligne de fracture est interne.</text></svg>`,
+
+"h-gguerre": `<svg class="sch" viewBox="-13 -6 419 160"><title>La Grande Guerre</title>
+<rect x="0" y="26" width="46" height="22" fill="var(--gold)" opacity=".35"/>
+<rect x="46" y="26" width="290" height="22" fill="var(--muted)" opacity=".25"/>
+<rect x="336" y="26" width="64" height="22" fill="var(--ok)" opacity=".35"/>
+<rect x="0" y="26" width="400" height="22" fill="none" stroke="var(--line)"/>
+<text class="sm" x="23" y="41" text-anchor="middle" fill="var(--ink)">mouvement</text>
+<text class="sm" x="191" y="41" text-anchor="middle" fill="var(--ink)">guerre de position, front figé</text>
+<text class="sm" x="368" y="41" text-anchor="middle" fill="var(--ink)">retour</text>
+<text class="sm" x="0" y="20">1914</text><text class="sm" x="120" y="20">1915</text><text class="sm" x="196" y="20">1916</text><text class="sm" x="272" y="20">1917</text><text class="sm" x="348" y="20">1918</text>
+<line x1="34" y1="48" x2="34" y2="62" stroke="var(--ok)"/><text class="sm" x="34" y="74" text-anchor="middle">Marne</text><text class="sm" x="34" y="85" text-anchor="middle">sept. 1914</text>
+<line x1="196" y1="48" x2="196" y2="62" stroke="var(--red)"/><text class="sm" x="196" y="74" text-anchor="middle">Verdun</text><text class="sm" x="196" y="85" text-anchor="middle">févr.-déc. 1916</text>
+<line x1="272" y1="48" x2="272" y2="62" stroke="var(--red)"/><text class="sm" x="272" y="74" text-anchor="middle">Chemin des Dames</text><text class="sm" x="272" y="85" text-anchor="middle">avril 1917, mutineries</text>
+<line x1="366" y1="48" x2="366" y2="62" stroke="var(--ok)"/><text class="sm" x="366" y="74" text-anchor="middle">11 nov.</text><text class="sm" x="366" y="85" text-anchor="middle">armistice</text>
+<text class="sm" x="0" y="112">La course à la mer d'octobre 1914 fige un front continu de la mer</text>
+<text class="sm" x="0" y="124">du Nord à la Suisse : quatre ans sans mouvement décisif.</text>
+<text class="sm" x="0" y="144">Environ 1,4 million de morts français, et 4 millions de blessés.</text></svg>`,
+
+"h-laicite": `<svg class="sch" viewBox="-6 -6 412 169"><title>Les trois laïcités de 1905</title>
+<rect x="0" y="18" width="124" height="82" rx="5" fill="var(--ok)" opacity=".2" stroke="var(--ok)"/>
+<text class="t2" x="62" y="36" text-anchor="middle">Briand</text>
+<text class="sm" x="62" y="52" text-anchor="middle">laïcité libérale</text><text class="sm" x="62" y="68" text-anchor="middle">séparer sans</text><text class="sm" x="62" y="80" text-anchor="middle">persécuter ; c'est</text><text class="sm" x="62" y="92" text-anchor="middle">sa loi qui passe</text>
+<rect x="138" y="18" width="124" height="82" rx="5" fill="var(--red)" opacity=".2" stroke="var(--red)"/>
+<text class="t2" x="200" y="36" text-anchor="middle">Allard</text>
+<text class="sm" x="200" y="52" text-anchor="middle">laïcité de combat</text><text class="sm" x="200" y="68" text-anchor="middle">réduire l'Église,</text><text class="sm" x="200" y="80" text-anchor="middle">l'État doit lutter</text><text class="sm" x="200" y="92" text-anchor="middle">contre la religion</text>
+<rect x="276" y="18" width="124" height="82" rx="5" fill="var(--blue)" opacity=".2" stroke="var(--blue)"/>
+<text class="t2" x="338" y="36" text-anchor="middle">Jaurès</text>
+<text class="sm" x="338" y="52" text-anchor="middle">laïcité stratégique</text><text class="sm" x="338" y="68" text-anchor="middle">la séparation sert</text><text class="sm" x="338" y="80" text-anchor="middle">la question sociale,</text><text class="sm" x="338" y="92" text-anchor="middle">elle n'est pas le but</text>
+<text class="sm" x="0" y="126">Les trois sont à gauche : le débat de 1905 n'oppose pas la gauche</text>
+<text class="sm" x="0" y="138">à la droite, il traverse la gauche elle-même.</text>
+<text class="sm" x="0" y="154">Écrire l'inverse est le piège principal du chapitre.</text></svg>`,
+
+"h-industrie": `<svg class="sch" viewBox="-6 -6 412 168"><title>La société industrielle</title>
+<line x1="14" y1="52" x2="386" y2="52" stroke="var(--line)" stroke-width="1.5"/>
+<circle cx="40" cy="52" r="5" fill="var(--muted)"/><circle cx="132" cy="52" r="6" fill="var(--red)"/><circle cx="232" cy="52" r="5" fill="var(--gold)"/><circle cx="340" cy="52" r="5" fill="var(--blue)"/>
+<text class="t2" x="40" y="38" text-anchor="middle">1840</text><text class="t2" x="132" y="38" text-anchor="middle">1855-1867</text><text class="t2" x="232" y="38" text-anchor="middle">1884</text><text class="t2" x="340" y="38" text-anchor="middle">1906</text>
+<text class="sm" x="40" y="72" text-anchor="middle">chemin de fer</text><text class="sm" x="40" y="84" text-anchor="middle">Le Creusot</text>
+<text class="sm" x="132" y="72" text-anchor="middle">expositions</text><text class="sm" x="132" y="84" text-anchor="middle">universelles</text><text class="sm" x="132" y="96" text-anchor="middle">à Paris</text>
+<text class="sm" x="232" y="72" text-anchor="middle">loi Waldeck-</text><text class="sm" x="232" y="84" text-anchor="middle">Rousseau :</text><text class="sm" x="232" y="96" text-anchor="middle">syndicats libres</text>
+<text class="sm" x="340" y="72" text-anchor="middle">Courrières</text><text class="sm" x="340" y="84" text-anchor="middle">1 099 morts</text>
+<text class="sm" x="14" y="20">Le Creusot et l'Exposition de 1867 : les documents du chapitre 7.</text>
+<text class="sm" x="14" y="126">Jaurès parle de « 1 400 cadavres » ; le bilan officiel est de 1 099.</text>
+<text class="sm" x="14" y="138">Attribuer le chiffre à Jaurès plutôt que le donner comme un fait :</text>
+<text class="sm" x="14" y="152">c'est exactement ce qui distingue une bonne copie.</text></svg>`,
+
+"h-secondempire": `<svg class="sch" viewBox="-6 -6 413 162"><title>Le Second Empire et le monde</title>
+<rect x="0" y="18" width="94" height="66" rx="5" fill="var(--ok)" opacity=".2" stroke="var(--ok)"/>
+<text class="t2" x="47" y="34" text-anchor="middle">Crimée</text><text class="sm" x="47" y="48" text-anchor="middle">1854-1856</text><text class="sm" x="47" y="62" text-anchor="middle">avec Londres</text><text class="sm" x="47" y="74" text-anchor="middle">contre la Russie</text>
+<rect x="102" y="18" width="94" height="66" rx="5" fill="var(--ok)" opacity=".2" stroke="var(--ok)"/>
+<text class="t2" x="149" y="34" text-anchor="middle">Italie</text><text class="sm" x="149" y="48" text-anchor="middle">1859</text><text class="sm" x="149" y="62" text-anchor="middle">Magenta, Solférino</text><text class="sm" x="149" y="74" text-anchor="middle">Nice et la Savoie</text>
+<rect x="204" y="18" width="94" height="66" rx="5" fill="var(--gold)" opacity=".2" stroke="var(--gold)"/>
+<text class="t2" x="251" y="34" text-anchor="middle">Chine</text><text class="sm" x="251" y="48" text-anchor="middle">1860</text><text class="sm" x="251" y="62" text-anchor="middle">sac du Palais d'Été</text><text class="sm" x="251" y="74" text-anchor="middle">dénoncé par Hugo</text>
+<rect x="306" y="18" width="94" height="66" rx="5" fill="var(--red)" opacity=".22" stroke="var(--red)"/>
+<text class="t2" x="353" y="34" text-anchor="middle">Mexique</text><text class="sm" x="353" y="48" text-anchor="middle">1862-1867</text><text class="sm" x="353" y="62" text-anchor="middle">« la plus grande</text><text class="sm" x="353" y="74" text-anchor="middle">pensée du règne »</text>
+<text class="sm" x="0" y="108">À chaque fois, la France invoque un principe universel — nationalités,</text>
+<text class="sm" x="0" y="120">protection des chrétiens, civilisation — pour une intervention qui sert</text>
+<text class="sm" x="0" y="132">aussi ses intérêts. Ce n'est pas un mensonge : c'est la forme même</text>
+<text class="sm" x="0" y="146">de la puissance au XIX<tspan dy="-3" font-size="7">e</tspan><tspan dy="3"> siècle, et on la retrouvera en 1885.</tspan></text></svg>`,
+
+"h-1914front": `<svg class="sch" viewBox="-6 -6 412 180"><title>Le front occidental</title>
+<rect x="0" y="14" width="400" height="112" rx="6" fill="var(--ok)" opacity=".07" stroke="var(--line)"/>
+<text class="sm" x="16" y="30" fill="var(--blue)">mer du Nord</text>
+<text class="sm" x="384" y="120" text-anchor="end">Suisse</text>
+<path d="M44 34 C 84 58, 120 48, 152 74 C 186 100, 230 92, 268 104 C 308 116, 336 112, 364 118" fill="none" stroke="var(--red)" stroke-width="2.4"/>
+<path d="M44 34 C 84 58, 120 48, 152 74 C 186 100, 230 92, 268 104 C 308 116, 336 112, 364 118" fill="none" stroke="var(--red)" stroke-width="7" opacity=".18"/>
+<circle cx="120" cy="52" r="3.5" fill="var(--ink)"/><text class="sm" x="128" y="50">Ypres</text>
+<circle cx="176" cy="84" r="3.5" fill="var(--ink)"/><text class="sm" x="184" y="82">la Somme</text>
+<circle cx="150" cy="106" r="3.5" fill="var(--ink)"/><text class="sm" x="144" y="118" text-anchor="end">Paris</text>
+<circle cx="248" cy="99" r="4" fill="var(--red)"/><text class="sm" x="256" y="96">Verdun</text>
+<circle cx="214" cy="94" r="3.5" fill="var(--ink)"/><text class="sm" x="206" y="88" text-anchor="end">Chemin des Dames</text>
+<text class="sm" x="0" y="148">Après la course à la mer d'octobre 1914, le front ne bouge plus que</text>
+<text class="sm" x="0" y="160">de quelques kilomètres jusqu'à l'été 1918.</text></svg>`
+
+};
+
+const SCHEMAS = Object.assign({}, SCH_ROME, SCH_GEO, SCH_HC);
+const SCH_GROUPS = [
+  {t:"Histoire romaine", ids:Object.keys(SCH_ROME)},
+  {t:"Géographie — les mondes du froid", ids:Object.keys(SCH_GEO)},
+  {t:"Histoire contemporaine", ids:Object.keys(SCH_HC)}
+];
+const schTitle = id => { const m = /<title>([^<]*)<\/title>/.exec(SCHEMAS[id]||""); return m ? m[1] : id; };
+
+/* ======================= LOGIQUE ======================= */
+const $ = id => document.getElementById(id);
+const KEY = "quizhisto_v1";
+let store = { scores:{}, wrong:[], hist:[], best:{}, survie:false };
+try{ const raw = localStorage.getItem(KEY); if(raw) store = Object.assign(store, JSON.parse(raw)); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+
+const SUBJECTS = [
+  {id:"contemp", pre:"", t:"Histoire contemporaine", s:"L1 BCC1 UE2 · 1815-1919", unit:"Chapitre", chs:CHAPTERS},
+  {id:"rome", pre:"R", t:"Histoire romaine", s:"L1 BCC1 UE1 · 753-82 av. J.-C.", unit:"Chapitre", chs:CH_ROME},
+  {id:"geo", pre:"G", t:"Géographie — les mondes du froid", s:"L1 BCC2 UE1 · TD 1 à 8", unit:"TD", chs:CH_GEO}
+];
+const chKey = (sub,ch) => sub.pre + "ch" + ch.n;
+const expand = (sub,ch) => ch.qs.map((q,i) => ({...q, ch:ch.n, cht:ch.t, sub:sub.id, subt:sub.t,
+  tag: sub.unit + " " + ch.n + " · " + ch.t + " — " + sub.t, id: sub.pre + ch.n + "-" + i}));
+const ALL = [];
+SUBJECTS.forEach(sub => sub.chs.forEach(ch => expand(sub,ch).forEach(q => ALL.push(q))));
+let CURSUB = SUBJECTS[0];
+
+let S = null; // session courante
+
+const shuffle = a => { const b=a.slice(); for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; };
+const show = id => ["home","quiz","result","gallery","records"].forEach(s => $(s).classList.toggle("hide", s!==id));
+
+function renderHome(){
+  $("sTotal").textContent = ALL.length;
+  const done = Object.keys(store.scores).length;
+  $("sDone").textContent = done;
+  const vals = Object.values(store.scores);
+  $("sAvg").textContent = vals.length ? Math.round(vals.reduce((a,b)=>a+b.pct,0)/vals.length) + " %" : "—";
+  const nW = store.wrong.length;
+  $("errCount").textContent = nW ? nW + " question" + (nW>1?"s":"") + " à retravailler" : "Aucune erreur enregistrée";
+  $("mErrors").disabled = nW === 0;
+
+  $("survieBox").classList.toggle("on", !!store.survie);
+  const tabs = $("subTabs"); tabs.innerHTML = "";
+  SUBJECTS.forEach(sub => {
+    const t = document.createElement("button");
+    t.className = "tab" + (sub.id === CURSUB.id ? " on" : "");
+    const n = sub.chs.reduce((a,c)=>a+c.qs.length,0);
+    t.innerHTML = '<b>'+sub.t+'</b><span>'+n+' questions</span>';
+    t.onclick = () => { CURSUB = sub; renderHome(); };
+    tabs.appendChild(t);
+  });
+  $("subNote").textContent = CURSUB.s;
+
+  $("chapList").innerHTML = "";
+  CURSUB.chs.forEach(ch => {
+    const sc = store.scores[chKey(CURSUB,ch)];
+    const b = document.createElement("button");
+    b.className = "chap";
+    b.innerHTML =
+      '<span class="chnum">'+ch.n+'</span>'+
+      '<span><span class="chttl">'+ch.t+'</span><span class="chsub">'+ch.s+' · '+ch.qs.length+' questions</span></span>'+
+      '<span class="score">'+(sc ? '<b>'+sc.pct+' %</b>meilleur score' : 'jamais fait')+'</span>';
+    b.onclick = () => { const sub = CURSUB; start(expand(sub,ch), sub.unit+" "+ch.n+" — "+sub.t, chKey(sub,ch)); };
+    $("chapList").appendChild(b);
+  });
+}
+
+function start(list, label, key, gen){
+  S = { qs: shuffle(list), i:0, right:0, label, key, answered:false, log:[],
+        gen: gen || null, survie: !!store.survie, dead:false, started: Date.now() };
+  $("qStreakBar").classList.toggle("hide", !S.survie);
+  show("quiz"); renderQ(); window.scrollTo({top:0});
+}
+
+function renderQ(){
+  const q = S.qs[S.i];
+  S.answered = false;
+  $("qTag").textContent = q.tag || ("Chapitre " + q.ch + " · " + q.cht);
+  $("qText").innerHTML = q.q;
+  $("qPos").textContent = "Question " + (S.i+1) + " / " + S.qs.length;
+  $("qScore").textContent = S.right + " bonne" + (S.right>1?"s":"") + " réponse" + (S.right>1?"s":"");
+  $("qBar").style.width = (S.i / S.qs.length * 100) + "%";
+  $("qExpl").classList.add("hide");
+  $("nextBtn").classList.add("hide");
+  if(S.survie){
+    const rec = store.best[S.key || "mix"] || 0;
+    $("qStreak").textContent = "série : " + S.right + (rec ? "   ·   record : " + rec : "");
+  }
+  $("nextBtn").textContent = (S.i === S.qs.length-1) ? "Voir mon résultat" : "Suivant";
+
+  const order = shuffle(q.o.map((txt,idx)=>({txt,idx})));
+  const box = $("qOpts"); box.innerHTML = "";
+  order.forEach((o,pos) => {
+    const btn = document.createElement("button");
+    btn.className = "opt"; btn.dataset.k = pos; btn.dataset.idx = o.idx;
+    btn.innerHTML = '<kbd>'+(pos+1)+'</kbd><span>'+o.txt+'</span>';
+    btn.onclick = () => answer(o.idx, btn);
+    box.appendChild(btn);
+  });
+}
+
+function answer(chosen, btn){
+  if(S.answered) return;
+  S.answered = true;
+  const q = S.qs[S.i];
+  const good = chosen === q.c;
+  if(good) S.right++;
+  [...$("qOpts").children].forEach(el => {
+    el.disabled = true;
+    const idx = parseInt(el.dataset.idx,10);
+    if(idx === q.c) el.classList.add("good");
+    else if(el === btn) el.classList.add("bad");
+  });
+  S.log.push({q, chosen, good});
+  if(good){ store.wrong = store.wrong.filter(x => x !== q.id); }
+  else if(!store.wrong.includes(q.id)){ store.wrong.push(q.id); }
+  save();
+  let bloc = "";
+  if(q.s && SCHEMAS[q.s]){
+    bloc = '<div class="schwrap">' +
+           '<div class="schlab">Le schéma — ' + schTitle(q.s) + '</div>' +
+           SCHEMAS[q.s] +
+           (q.w ? '<p class="schwhy"><b>Pourquoi ce schéma répond à la question.</b> ' + q.w + '</p>' : '') +
+           '</div>';
+  }
+  $("qExpl").innerHTML = '<p class="expltxt">' + (good ? "<b>Exact.</b> " : "<b>Non.</b> ") + q.e + '</p>' + bloc;
+  $("qExpl").classList.remove("hide");
+  $("nextBtn").classList.remove("hide");
+  $("qScore").textContent = S.right + " bonne" + (S.right>1?"s":"") + " réponse" + (S.right>1?"s":"");
+  if(S.survie){
+    const rec = store.best[S.key || "mix"] || 0;
+    $("qStreak").textContent = "série : " + S.right + (rec ? "   ·   record : " + rec : "");
+    if(!good){
+      S.dead = true;
+      $("nextBtn").textContent = "Fin de la partie";
+    }
+  }
+}
+
+function next(){
+  if(S.dead) return finish();
+  if(S.i < S.qs.length-1){ S.i++; renderQ(); window.scrollTo({top:0,behavior:"smooth"}); }
+  else finish();
+}
+
+function finish(){
+  const posees = S.dead ? (S.i + 1) : S.qs.length;
+  const pct = Math.round(S.right / posees * 100);
+  const kb = S.key || "mix";
+  if(S.survie){
+    if(S.right > (store.best[kb] || 0)) store.best[kb] = S.right;
+  }
+  if(S.key && !S.survie){
+    const prev = store.scores[S.key];
+    if(!prev || pct > prev.pct) store.scores[S.key] = { pct, date: Date.now() };
+  }
+  store.hist = (store.hist || []);
+  store.hist.unshift({ l:S.label, r:S.right, n:posees, sv:!!S.survie, d:Date.now() });
+  store.hist = store.hist.slice(0,40);
+  save();
+  if(S.survie){
+    const rec = store.best[kb] || 0;
+    $("rScore").textContent = S.right + (S.right > 1 ? " bonnes réponses" : " bonne réponse");
+    $("rSub").textContent = "Mode survie · " + S.label + (rec ? " · record : " + rec : "");
+    $("rVerdict").textContent = S.dead
+      ? (S.right >= rec && S.right > 0 ? "Nouveau record. La question fatale est rappelée ci-dessous." : "Série interrompue. La question fatale est rappelée ci-dessous.")
+      : "Série complète sans une seule erreur. Difficile de faire mieux.";
+  } else {
+  $("rScore").textContent = S.right + " / " + S.qs.length;
+  $("rSub").textContent = S.label + " · " + pct + " % de bonnes réponses";
+  $("rVerdict").textContent =
+    pct >= 90 ? "Excellent — ce chapitre est acquis." :
+    pct >= 70 ? "Bon niveau. Revoyez les questions manquées ci-dessous." :
+    pct >= 50 ? "À consolider : reprenez la fiche mémo du chapitre, puis refaites le quiz." :
+                "Reprenez le diaporama du chapitre avant de retenter : les bases ne sont pas encore en place.";
+  }
+  const wrong = S.log.filter(x => !x.good);
+  $("wrongBtn").classList.toggle("hide", wrong.length === 0);
+  renderReview(S.log);
+  show("result");
+  window.scrollTo({top:0});
+}
+
+function renderReview(log){
+  const box = $("rReview"); box.innerHTML = "";
+  const wrong = log.filter(x => !x.good);
+  if(!wrong.length){
+    box.innerHTML = '<div class="empty">Aucune erreur sur cette série. Rien à revoir.</div>';
+    return;
+  }
+  const h = document.createElement("div");
+  h.className = "seclabel"; h.textContent = "À revoir (" + wrong.length + ")";
+  box.appendChild(h);
+  wrong.forEach(x => {
+    const d = document.createElement("div");
+    d.className = "rev";
+    d.innerHTML =
+      '<div class="q">'+x.q.q+'</div>'+
+      '<div class="a bd">Votre réponse : '+x.q.o[x.chosen]+'</div>'+
+      '<div class="a gd">Bonne réponse : '+x.q.o[x.q.c]+'</div>'+
+      '<div class="e">'+x.q.e+((x.q.s && SCHEMAS[x.q.s]) ? SCHEMAS[x.q.s] : "")+'</div>';
+    box.appendChild(d);
+  });
+}
+
+function renderGallery(){
+  const box = $("galList"); box.innerHTML = "";
+  SCH_GROUPS.forEach(g => {
+    const lab = document.createElement("div");
+    lab.className = "seclabel"; lab.textContent = g.t; box.appendChild(lab);
+    const grid = document.createElement("div"); grid.className = "galgrid";
+    g.ids.forEach(id => {
+      const d = document.createElement("div"); d.className = "galcard";
+      d.innerHTML = '<h4>' + schTitle(id) + '</h4>' + SCHEMAS[id];
+      grid.appendChild(d);
+    });
+    box.appendChild(grid);
+  });
+}
+
+function renderRecords(){
+  const box = $("recBody"); box.innerHTML = "";
+  const vals = Object.values(store.scores);
+  const moy = vals.length ? Math.round(vals.reduce((a,b)=>a+b.pct,0)/vals.length) : null;
+  const parties = (store.hist || []).length;
+  const g = document.createElement("div"); g.className = "recgrid";
+  const nErr = store.wrong.length;
+  g.innerHTML =
+    '<div class="stat"><b>' + ALL.length + '</b><span>questions au total</span></div>' +
+    '<div class="stat"><b>' + nErr + '</b><span>erreurs à retravailler</span></div>' +
+    '<div class="stat"><b>' + (moy === null ? "—" : moy + " %") + '</b><span>moyenne des meilleurs scores</span></div>' +
+    '<div class="stat"><b>' + parties + '</b><span>parties jouées</span></div>';
+  box.appendChild(g);
+
+  SUBJECTS.forEach(sub => {
+    const lab = document.createElement("div");
+    lab.className = "seclabel"; lab.textContent = sub.t; box.appendChild(lab);
+    const bx = document.createElement("div"); bx.className = "recbox";
+    sub.chs.forEach(ch => {
+      const sc = store.scores[chKey(sub,ch)];
+      const r = document.createElement("div"); r.className = "recrow";
+      r.innerHTML = '<span>' + sub.unit + ' ' + ch.n + ' · ' + ch.t + '</span><b>' +
+        (sc ? sc.pct + ' %' : '—') + '</b>';
+      bx.appendChild(r);
+      if(sc){
+        const b = document.createElement("div");
+        b.style.cssText = "padding:0 12px 8px";
+        b.innerHTML = '<span class="bar"><i style="width:' + sc.pct + '%"></i></span>';
+        bx.appendChild(b);
+      }
+    });
+    box.appendChild(bx);
+  });
+
+  const bests = Object.entries(store.best || {}).filter(x => x[1] > 0);
+  const lab2 = document.createElement("div");
+  lab2.className = "seclabel"; lab2.textContent = "Records du mode survie"; box.appendChild(lab2);
+  const bb = document.createElement("div"); bb.className = "recbox";
+  if(!bests.length){ bb.innerHTML = '<div class="empty">Aucune partie en mode survie pour le moment.</div>'; }
+  else bests.sort((a,b)=>b[1]-a[1]).forEach(([k,v]) => {
+    const r = document.createElement("div"); r.className = "recrow";
+    r.innerHTML = '<span>' + keyLabel(k) + '</span><b>' + v + ' d\'affilée</b>';
+    bb.appendChild(r);
+  });
+  box.appendChild(bb);
+
+  const lab3 = document.createElement("div");
+  lab3.className = "seclabel"; lab3.textContent = "Dernières parties"; box.appendChild(lab3);
+  const hb = document.createElement("div"); hb.className = "recbox";
+  if(!parties){ hb.innerHTML = '<div class="empty">Rien pour l\'instant.</div>'; }
+  else (store.hist || []).slice(0,15).forEach(e => {
+    const r = document.createElement("div"); r.className = "recrow";
+    const dt = new Date(e.d);
+    const jour = dt.toLocaleDateString("fr-FR", {day:"2-digit", month:"2-digit"});
+    r.innerHTML = '<span>' + jour + ' · ' + e.l + (e.sv ? ' <span style="color:var(--red)">survie</span>' : '') +
+      '</span><b>' + e.r + ' / ' + e.n + '</b>';
+    hb.appendChild(r);
+  });
+  box.appendChild(hb);
+}
+
+function keyLabel(k){
+  if(k === "mix") return "Quiz mix";
+  for(const sub of SUBJECTS){
+    if(k === "exam-" + sub.id) return "Examen blanc — " + sub.t;
+    if(k === "all-" + sub.id) return "Révision complète — " + sub.t;
+    for(const ch of sub.chs) if(k === chKey(sub,ch)) return sub.unit + " " + ch.n + " — " + sub.t;
+  }
+  return k;
+}
+
+$("survieBox").onclick = () => { store.survie = !store.survie; save(); renderHome(); };
+$("mGal").onclick = () => { renderGallery(); show("gallery"); window.scrollTo({top:0}); };
+$("mRec").onclick = () => { renderRecords(); show("records"); window.scrollTo({top:0}); };
+$("galBack").onclick = () => { renderHome(); show("home"); window.scrollTo({top:0}); };
+$("recBack").onclick = () => { renderHome(); show("home"); window.scrollTo({top:0}); };
+$("nextBtn").onclick = next;
+let _ask = null;
+function ask(texte, oui, libelle){
+  $("modalTxt").textContent = texte;
+  $("modalYes").textContent = libelle || "Confirmer";
+  _ask = oui;
+  $("modal").classList.remove("hide");
+}
+function askClose(){ $("modal").classList.add("hide"); _ask = null; }
+$("modalNo").onclick = askClose;
+$("modal").onclick = e => { if(e.target === $("modal")) askClose(); };
+$("modalYes").onclick = () => { const f = _ask; askClose(); if(f) f(); };
+
+function quitQuiz(){
+  ask("Quitter ce quiz ? Votre progression sur cette série sera perdue.",
+      () => { renderHome(); show("home"); window.scrollTo({top:0}); }, "Quitter");
+}
+$("quitBtn").onclick = quitQuiz;
+$("quitTop").onclick = quitQuiz;
+$("homeBtn").onclick = () => { renderHome(); show("home"); window.scrollTo({top:0}); };
+$("againBtn").onclick = () => { if(S.gen){ const l = S.gen(); if(l.length) start(l, S.label, S.key, S.gen); } else start(S.qs, S.label, S.key); };
+$("wrongBtn").onclick = () => {
+  const w = S.log.filter(x => !x.good).map(x => x.q);
+  if(w.length) start(w, "Erreurs — " + S.label, null);
+};
+function drawMix(n){
+  const seen = Array.isArray(store.lastMix) ? new Set(store.lastMix) : new Set();
+  let pool = ALL.filter(q => !seen.has(q.id));
+  if(pool.length < n) pool = ALL.slice();
+  const pick = shuffle(pool).slice(0, Math.min(n, pool.length));
+  store.lastMix = pick.map(q => q.id); save();
+  return pick;
+}
+function examPool(){ const sub = CURSUB; const qs = []; sub.chs.forEach(ch => expand(sub,ch).forEach(q=>qs.push(q))); return shuffle(qs).slice(0,20); }
+$("mExam").onclick = () => start(examPool(), "Examen blanc — " + CURSUB.t, "exam-" + CURSUB.id, examPool);
+$("mMix").onclick = () => start(drawMix(20), "Quiz mix", null, () => drawMix(20));
+$("mAll").onclick = () => { const sub = CURSUB; const qs = []; sub.chs.forEach(ch => expand(sub,ch).forEach(q=>qs.push(q))); start(qs, "Révision complète — " + sub.t, "all-" + sub.id); };
+$("mErrors").onclick = () => {
+  const w = ALL.filter(q => store.wrong.includes(q.id));
+  if(w.length) start(w, "Mes erreurs", null);
+};
+$("resetBtn").onclick = () => {
+  ask("Effacer tous vos scores, vos records et la liste de vos erreurs ?", () => {
+    store = { scores:{}, wrong:[], hist:[], best:{}, survie:false }; save(); renderHome();
+  }, "Tout effacer");
+};
+$("themeBtn").onclick = () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const isDark = cur ? cur === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
+};
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape"){
+    if(!$("modal").classList.contains("hide")){ askClose(); return; }
+    if(!$("quiz").classList.contains("hide")){ quitQuiz(); return; }
+  }
+  if(!$("modal").classList.contains("hide")) return;
+  if($("quiz").classList.contains("hide")) return;
+  if(!S) return;
+  if(["1","2","3","4"].includes(e.key) && !S.answered){
+    const b = $("qOpts").querySelector('.opt[data-k="'+(parseInt(e.key,10)-1)+'"]');
+    if(b) b.click();
+  } else if(S.answered && (e.key === "Enter" || e.key === " ")){
+    e.preventDefault(); next();
+  }
+});
+
+renderHome();
+</script>
+</body>
+</html>
